@@ -31,11 +31,17 @@ public class RecipeStepDetailsFragment extends Fragment {
         View view = null;
 
         if (this.mBinding == null) {
+            this.mBinding = DataBindingUtil.inflate(inflater,
+                    R.layout.fragment_recipe_step_details,
+                    container,
+                    false);
+            /*
             this.mBinding = DataBindingUtil.getBinding(
                     inflater.inflate(
                             R.layout.fragment_recipe_step_details,
                             container,
                             false));
+            */
         }
 
         if (this.mBinding != null) {
