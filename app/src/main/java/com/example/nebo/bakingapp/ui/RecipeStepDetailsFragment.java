@@ -35,13 +35,6 @@ public class RecipeStepDetailsFragment extends Fragment {
                     R.layout.fragment_recipe_step_details,
                     container,
                     false);
-            /*
-            this.mBinding = DataBindingUtil.getBinding(
-                    inflater.inflate(
-                            R.layout.fragment_recipe_step_details,
-                            container,
-                            false));
-            */
         }
 
         if (this.mBinding != null) {
@@ -49,6 +42,7 @@ public class RecipeStepDetailsFragment extends Fragment {
             view = this.mBinding.getRoot();
         }
         else {
+            // If for some reason databinding fails revert to the old way of doing things.
             view = inflater.inflate(R.layout.fragment_recipe_step_details,
                     container,
                     false);
