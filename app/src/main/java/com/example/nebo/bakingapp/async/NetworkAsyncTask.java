@@ -22,6 +22,8 @@ import retrofit2.http.GET;
 public class NetworkAsyncTask extends AsyncTaskLoader<List<Recipe>> {
     private static final String sEndPointAddress =
             "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
+    private static final String sBaseEndPointAddress =
+            "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
 
     private List<Recipe> mRecipes;
 
@@ -57,7 +59,7 @@ public class NetworkAsyncTask extends AsyncTaskLoader<List<Recipe>> {
     public List<Recipe> loadInBackground() {
 
         Retrofit retrofit = new Retrofit.Builder().
-                baseUrl(sEndPointAddress).
+                baseUrl(sBaseEndPointAddress).
                 addConverterFactory(GsonConverterFactory.create()).
                 client(new OkHttpClient()).
                 build();
@@ -68,6 +70,18 @@ public class NetworkAsyncTask extends AsyncTaskLoader<List<Recipe>> {
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                Log.d("Received Data", "Rec");
+
+                if (response != null && response.body() != null) {
+                    Log.d("body size", Integer.toString(response.body().size()));
+                }
+                else if (response == null) {
+                    Log.e ("NULL RESPONES", "NULL RESPONSE");
+                }
+                else {
+                    Log.e ("NULL RESPONSE BODY", "NULL RESPONSE BODY");
+                }
+
                 mRecipes = response.body();
             }
 
@@ -81,7 +95,7 @@ public class NetworkAsyncTask extends AsyncTaskLoader<List<Recipe>> {
     }
 
     public interface RecipeService {
-        @GET("")
+        @GET("baking.json")
         Call<List<Recipe>> listRecipes();
     }
 }
