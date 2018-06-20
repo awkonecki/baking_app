@@ -23,17 +23,4 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("Count of Recipes", Integer.toString(Data.getRecipes().length));
     }
-
-    private void function() {
-        Cursor cursor;
-
-        if (cursor != null && cursor.getCount() > 0) {
-            cursor.moveToFirst();
-
-            do {
-                // column operations.
-                int movieId = cursor.getInt(cursor.getColumnIndex(ContractClass.ID_COLUMN_NAME));
-            } while (cursor.moveToNext());
-        }
-    }
 }
