@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
         manager.beginTransaction().add(R.id.fl_recipe_step_details, fragment).commit();
 
-        // NetworkAsyncTaskLoader taskLoader = new NetworkAsyncTaskLoader(this);
 
         LoaderManager loaderManager = getSupportLoaderManager();
 
@@ -42,43 +41,15 @@ public class MainActivity extends AppCompatActivity {
             if (loader == null) {
                 loaderManager.initLoader(QUERY_TASK_ID,
                         null,
-                        new NetworkLoader()).forceLoad();
+                        new NetworkAsyncTaskLoader(this)).forceLoad();
             } else {
-                //loaderManager.restartLoader(NetworkAsyncTaskLoader.QUERY_TASK_ID,
-                //        null,
-                //        new NetworkAsyncTaskLoader(this)).forceLoad();
+                loaderManager.restartLoader(NetworkAsyncTaskLoader.QUERY_TASK_ID,
+                        null,
+                        new NetworkAsyncTaskLoader(this)).forceLoad();
             }
         }
         else {
             Log.e("MainActivity", "Loader Manager is null.");
-        }
-    }
-
-    private class NetworkLoader implements LoaderManager.LoaderCallbacks<List<Recipe>> {
-        @NonNull
-        @Override
-        public Loader<List<Recipe>> onCreateLoader(int id, @Nullable Bundle args) {
-            Loader<List<Recipe>> loader = null;
-
-            switch (id) {
-                case QUERY_TASK_ID:
-                    loader = new NetworkAsyncTask(MainActivity.this);
-                default:
-                    break;
-            }
-
-            return loader;
-        }
-
-        @Override
-        public void onLoadFinished(@NonNull Loader<List<Recipe>> loader, List<Recipe> data) {
-            if (data != null) {
-                Log.d("Data Size", Integer.toString(data.size()));
-            }
-        }
-
-        @Override
-        public void onLoaderReset(@NonNull Loader<List<Recipe>> loader) {
         }
     }
 }

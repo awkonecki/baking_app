@@ -32,12 +32,20 @@ public class NetworkAsyncTaskLoader implements LoaderManager.LoaderCallbacks<Lis
                 break;
         }
 
-        return null;
+        if (loader == null) {
+            throw new java.lang.UnsupportedOperationException(
+                    "Null loader will result in LoaderManager failing."
+            );
+        }
+
+        return loader;
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<Recipe>> loader, List<Recipe> data) {
-        Log.d("Data Size", Integer.toString(data.size()));
+        if (data != null) {
+            Log.d("Data Size", Integer.toString(data.size()));
+        }
     }
 
     @Override
