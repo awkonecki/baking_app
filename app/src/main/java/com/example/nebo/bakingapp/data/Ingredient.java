@@ -1,7 +1,7 @@
 package com.example.nebo.bakingapp.data;
 
 public class Ingredient {
-    int quantity;
+    float quantity;
     String measure;
     String ingredient;
 }
