@@ -16,12 +16,20 @@ import com.example.nebo.bakingapp.async.NetworkAsyncTaskLoader;
 import com.example.nebo.bakingapp.data.Data;
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.ui.RecipeStepDetailsFragment;
+import com.example.nebo.bakingapp.util.NetworkUtils;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.example.nebo.bakingapp.async.NetworkAsyncTaskLoader.QUERY_TASK_ID;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MAIN ACTIVITY";
+    private List<Recipe> mRecipes = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,25 +39,21 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
 
         manager.beginTransaction().add(R.id.fl_recipe_step_details, fragment).commit();
+        NetworkUtils.getRecipesFromNetwork(new RecipeNetworkHandler());
+    }
 
+    private class RecipeNetworkHandler implements Callback<List<Recipe>> {
 
-        LoaderManager loaderManager = getSupportLoaderManager();
-
-        if (loaderManager != null) {
-            Loader<List<Recipe>> loader = loaderManager.getLoader(QUERY_TASK_ID);
-
-            if (loader == null) {
-                loaderManager.initLoader(QUERY_TASK_ID,
-                        null,
-                        new NetworkAsyncTaskLoader(this)).forceLoad();
-            } else {
-                loaderManager.restartLoader(NetworkAsyncTaskLoader.QUERY_TASK_ID,
-                        null,
-                        new NetworkAsyncTaskLoader(this)).forceLoad();
+        @Override
+        public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+            if (response != null && response.body() != null) {
+                MainActivity.this.mRecipes = response.body();
+                Log.d (TAG, "Number of recipes is " + Integer.toString(mRecipes.size()));
             }
         }
-        else {
-            Log.e("MainActivity", "Loader Manager is null.");
+
+        @Override
+        public void onFailure(Call<List<Recipe>> call, Throwable t) {
         }
     }
 }
