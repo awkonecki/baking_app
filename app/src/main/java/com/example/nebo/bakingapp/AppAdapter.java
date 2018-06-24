@@ -8,11 +8,12 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.example.nebo.bakingapp.databinding.RecipeItemBinding;
+import com.example.nebo.bakingapp.view.AppView;
 import com.example.nebo.bakingapp.view.RecipeView;
 
 import java.util.List;
 
-public class AppAdapter <D, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+public class AppAdapter <D, VH extends AppView<D>> extends RecyclerView.Adapter<VH> {
     private List<D> mData = null;
 
     @NonNull
@@ -30,7 +31,9 @@ public class AppAdapter <D, VH extends RecyclerView.ViewHolder> extends Recycler
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
-
+        if (mData != null && position < mData.size()) {
+            holder.bind(mData.get(position));
+        }
     }
 
     @Override

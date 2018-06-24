@@ -47,7 +47,7 @@ public class RecipesFragment extends Fragment implements Callback<List<Recipe>> 
                         LinearLayoutManager.VERTICAL,
                         false);
 
-        AppAdapter<Recipe, RecipeView> adapter = new AppAdapter<Recipe, RecipeView>();
+        AppAdapter<Recipe, RecipeView<Recipe>> adapter = new AppAdapter<>();
 
         mBinding.rvRecipes.setAdapter(adapter);
         mBinding.rvRecipes.setLayoutManager(layoutManager);
@@ -59,7 +59,7 @@ public class RecipesFragment extends Fragment implements Callback<List<Recipe>> 
     @Override
     public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
         if (response != null && response.body() != null) {
-            AppAdapter<Recipe, RecipeView> adapter = null;
+            AppAdapter<Recipe, RecipeView<Recipe>> adapter = null;
 
             // Warning of unchecked cast.
             if (mBinding.rvRecipes.getAdapter() instanceof AppAdapter) {
