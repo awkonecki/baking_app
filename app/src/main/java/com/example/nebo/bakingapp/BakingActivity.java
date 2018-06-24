@@ -6,9 +6,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.databinding.ActivityBakingBinding;
+import com.example.nebo.bakingapp.databinding.FragmentRecipesBinding;
 import com.example.nebo.bakingapp.ui.RecipesFragment;
 
 import java.util.List;
@@ -36,12 +39,18 @@ public class BakingActivity extends AppCompatActivity {
 
         // the target fragment fragment_recipes.xml is the fragment that contains the recycler view
         // that needs to be populated with an appropriate view holder.
+
+
+
     }
 
     private class RecipeNetworkHandler implements Callback<List<Recipe>> {
         @Override
         public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
             if (response != null && response.body() != null) {
+                RecipesFragment recipesFragment =
+                        (RecipesFragment) getSupportFragmentManager().findFragmentById(R.id.fl_recipes);
+
 
             }
         }
