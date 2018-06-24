@@ -29,6 +29,7 @@ public class RecipesFragment extends Fragment
         AppAdapter.AdapterOnClickListener {
 
     private FragmentRecipesBinding mBinding = null;
+    private AppAdapter<Recipe, RecipeView<Recipe>> mAdapter = null;
 
     public RecipesFragment() {}
 
@@ -50,9 +51,9 @@ public class RecipesFragment extends Fragment
                         LinearLayoutManager.VERTICAL,
                         false);
 
-        AppAdapter<Recipe, RecipeView<Recipe>> adapter = new AppAdapter<>(this);
+        mAdapter = new AppAdapter<>(this);
 
-        mBinding.rvRecipes.setAdapter(adapter);
+        mBinding.rvRecipes.setAdapter(mAdapter);
         mBinding.rvRecipes.setLayoutManager(layoutManager);
         mBinding.rvRecipes.setHasFixedSize(true);
 
@@ -62,14 +63,7 @@ public class RecipesFragment extends Fragment
     @Override
     public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
         if (response != null && response.body() != null) {
-            AppAdapter<Recipe, RecipeView<Recipe>> adapter = null;
-
-            // Warning of unchecked cast.
-            if (mBinding.rvRecipes.getAdapter() instanceof AppAdapter) {
-                adapter = (AppAdapter) mBinding.rvRecipes.getAdapter();
-
-                adapter.setData(response.body());
-            }
+            mAdapter.setData(response.body());
         }
     }
 
@@ -80,6 +74,13 @@ public class RecipesFragment extends Fragment
 
     @Override
     public void onClick(int position) {
-        Log.d ("RECIPES FRAGMENT", "onClick Registered");
+        // On click event has occurred, so obtain the desire recipe from the adapter.
+        Recipe recipe = mAdapter.get(position);
+
+        if (recipe != null) {
+            // now will perform an intent to switch to the activity that is responsible for
+            // rendering the details associated with the recipe.
+
+        }
     }
 }
