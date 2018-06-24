@@ -3,22 +3,11 @@ package com.example.nebo.bakingapp;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 
-import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.databinding.ActivityBakingBinding;
-import com.example.nebo.bakingapp.databinding.FragmentRecipesBinding;
 import com.example.nebo.bakingapp.ui.RecipesFragment;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class BakingActivity extends AppCompatActivity {
     private ActivityBakingBinding mBinding = null;
@@ -41,23 +30,5 @@ public class BakingActivity extends AppCompatActivity {
         // that needs to be populated with an appropriate view holder.
 
 
-
-    }
-
-    private class RecipeNetworkHandler implements Callback<List<Recipe>> {
-        @Override
-        public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-            if (response != null && response.body() != null) {
-                RecipesFragment recipesFragment =
-                        (RecipesFragment) getSupportFragmentManager().findFragmentById(R.id.fl_recipes);
-
-
-            }
-        }
-
-        @Override
-        public void onFailure(Call<List<Recipe>> call, Throwable t) {
-            // populate for later.
-        }
     }
 }

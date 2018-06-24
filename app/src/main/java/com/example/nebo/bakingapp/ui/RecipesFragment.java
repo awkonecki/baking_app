@@ -16,7 +16,13 @@ import com.example.nebo.bakingapp.R;
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.databinding.FragmentRecipesBinding;
 
-public class RecipesFragment extends Fragment {
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class RecipesFragment extends Fragment implements Callback<List<Recipe>> {
 
     private FragmentRecipesBinding mBinding = null;
 
@@ -47,5 +53,24 @@ public class RecipesFragment extends Fragment {
         mBinding.rvRecipes.setHasFixedSize(true);
 
         return mBinding.getRoot();
+    }
+
+    @Override
+    public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+        if (response != null && response.body() != null) {
+            AppAdapter<Recipe, RecyclerView.ViewHolder> adapter = null;
+
+            // Warning of unchecked cast.
+            if (mBinding.rvRecipes.getAdapter() instanceof AppAdapter) {
+                adapter = (AppAdapter) mBinding.rvRecipes.getAdapter();
+
+                adapter.setData(response.body());
+            }
+        }
+    }
+
+    @Override
+    public void onFailure(Call<List<Recipe>> call, Throwable t) {
+
     }
 }
