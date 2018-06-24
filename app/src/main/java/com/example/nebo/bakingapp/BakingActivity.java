@@ -25,7 +25,7 @@ public class BakingActivity extends AppCompatActivity {
         RecipesFragment recipesFragment = new RecipesFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        fragmentManager.beginTransaction().add(R.id.fl_recipes, recipesFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.fl_recipes, recipesFragment).addToBackStack(null).commit();
 
         // now need to provide some logic to actually get the recipes.
         NetworkUtils.getRecipesFromNetwork(recipesFragment);

@@ -1,5 +1,7 @@
 package com.example.nebo.bakingapp.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.example.nebo.bakingapp.AppAdapter;
 import com.example.nebo.bakingapp.R;
+import com.example.nebo.bakingapp.RecipeActivity;
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.databinding.FragmentRecipesBinding;
 import com.example.nebo.bakingapp.view.RecipeView;
@@ -30,6 +33,7 @@ public class RecipesFragment extends Fragment
 
     private FragmentRecipesBinding mBinding = null;
     private AppAdapter<Recipe, RecipeView<Recipe>> mAdapter = null;
+    private Context mContext;
 
     public RecipesFragment() {}
 
@@ -80,7 +84,8 @@ public class RecipesFragment extends Fragment
         if (recipe != null) {
             // now will perform an intent to switch to the activity that is responsible for
             // rendering the details associated with the recipe.
-
+            Intent intent = new Intent(getContext(), RecipeActivity.class);
+            startActivity(intent);
         }
     }
 }
