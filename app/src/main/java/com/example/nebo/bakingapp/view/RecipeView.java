@@ -1,7 +1,9 @@
 package com.example.nebo.bakingapp.view;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
+import com.example.nebo.bakingapp.AppAdapter;
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.databinding.RecipeItemBinding;
 

@@ -23,7 +23,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RecipesFragment extends Fragment implements Callback<List<Recipe>> {
+public class RecipesFragment extends Fragment
+        implements Callback<List<Recipe>>,
+        AppAdapter.AdapterOnClickListener {
 
     private FragmentRecipesBinding mBinding = null;
 
@@ -72,6 +74,11 @@ public class RecipesFragment extends Fragment implements Callback<List<Recipe>> 
 
     @Override
     public void onFailure(Call<List<Recipe>> call, Throwable t) {
+
+    }
+
+    @Override
+    public void onClick(int position) {
 
     }
 }

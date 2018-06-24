@@ -16,6 +16,10 @@ import java.util.List;
 public class AppAdapter <D, VH extends AppView<D>> extends RecyclerView.Adapter<VH> {
     private List<D> mData = null;
 
+    public interface AdapterOnClickListener {
+        void onClick(int position);
+    }
+
     @NonNull
     @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -51,6 +55,15 @@ public class AppAdapter <D, VH extends AppView<D>> extends RecyclerView.Adapter<
             Log.d ("AppAdapter", "Updating the Adapter Data Set with " + Integer.toString(data.size()));
             this.mData = data;
             notifyDataSetChanged();
+        }
+    }
+
+    public D get(int index) {
+        if (index < 0 || index >= this.mData.size()) {
+            return null;
+        }
+        else {
+            return this.mData.get(index);
         }
     }
 }
