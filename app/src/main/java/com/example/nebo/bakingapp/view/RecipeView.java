@@ -10,8 +10,8 @@ import com.example.nebo.bakingapp.databinding.RecipeItemBinding;
 public class RecipeView <D> extends AppView<D> {
     private final RecipeItemBinding BINDING;
 
-    public RecipeView(RecipeItemBinding binding) {
-        super(binding.getRoot());
+    public RecipeView(RecipeItemBinding binding, AppAdapter.AdapterOnClickListener listener) {
+        super(binding.getRoot(), listener);
         BINDING = binding;
     }
 
