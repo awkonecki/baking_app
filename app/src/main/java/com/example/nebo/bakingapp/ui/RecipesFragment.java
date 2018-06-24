@@ -15,6 +15,7 @@ import com.example.nebo.bakingapp.AppAdapter;
 import com.example.nebo.bakingapp.R;
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.databinding.FragmentRecipesBinding;
+import com.example.nebo.bakingapp.view.RecipeView;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class RecipesFragment extends Fragment implements Callback<List<Recipe>> 
                         LinearLayoutManager.VERTICAL,
                         false);
 
-        AppAdapter<Recipe, RecyclerView.ViewHolder> adapter = new AppAdapter<>();
+        AppAdapter<Recipe, RecipeView> adapter = new AppAdapter<Recipe, RecipeView>();
 
         mBinding.rvRecipes.setAdapter(adapter);
         mBinding.rvRecipes.setLayoutManager(layoutManager);
@@ -58,7 +59,7 @@ public class RecipesFragment extends Fragment implements Callback<List<Recipe>> 
     @Override
     public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
         if (response != null && response.body() != null) {
-            AppAdapter<Recipe, RecyclerView.ViewHolder> adapter = null;
+            AppAdapter<Recipe, RecipeView> adapter = null;
 
             // Warning of unchecked cast.
             if (mBinding.rvRecipes.getAdapter() instanceof AppAdapter) {

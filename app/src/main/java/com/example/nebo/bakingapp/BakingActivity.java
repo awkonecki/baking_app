@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.nebo.bakingapp.databinding.ActivityBakingBinding;
 import com.example.nebo.bakingapp.ui.RecipesFragment;
+import com.example.nebo.bakingapp.util.NetworkUtils;
 
 public class BakingActivity extends AppCompatActivity {
     private ActivityBakingBinding mBinding = null;
@@ -26,9 +27,7 @@ public class BakingActivity extends AppCompatActivity {
 
         fragmentManager.beginTransaction().add(R.id.fl_recipes, recipesFragment).commit();
 
-        // the target fragment fragment_recipes.xml is the fragment that contains the recycler view
-        // that needs to be populated with an appropriate view holder.
-
-
+        // now need to provide some logic to actually get the recipes.
+        NetworkUtils.getRecipesFromNetwork(recipesFragment);
     }
 }
