@@ -10,4 +10,8 @@ public class Recipe {
     private ArrayList<RecipeStep> steps;
     private int servings;
     private String image;
+
+    public String getName() {
+        return this.name;
+    }
 }

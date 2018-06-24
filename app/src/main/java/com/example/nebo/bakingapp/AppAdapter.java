@@ -1,8 +1,14 @@
 package com.example.nebo.bakingapp;
 
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
+import com.example.nebo.bakingapp.databinding.RecipeItemBinding;
+import com.example.nebo.bakingapp.view.RecipeView;
 
 import java.util.List;
 
@@ -12,7 +18,14 @@ public class AppAdapter <D, VH extends RecyclerView.ViewHolder> extends Recycler
     @NonNull
     @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        RecipeItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.recipe_item, parent, false);
+
+        // hard code the Recipe view for now.
+        RecipeView<D> recipeView = new RecipeView<D>(binding);
+
+        return (VH) recipeView;
     }
 
     @Override
@@ -32,6 +45,7 @@ public class AppAdapter <D, VH extends RecyclerView.ViewHolder> extends Recycler
 
     public void setData(List<D> data) {
         if (data != null) {
+            Log.d ("AppAdapter", "Updating the Adapter Data Set with " + Integer.toString(data.size()));
             this.mData = data;
             notifyDataSetChanged();
         }
