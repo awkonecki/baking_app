@@ -83,6 +83,10 @@ public class RecipesFragment extends Fragment
             // now will perform an intent to switch to the activity that is responsible for
             // rendering the details associated with the recipe.
             Intent intent = new Intent(getContext(), RecipeActivity.class);
+
+            // Before starting the activity need to setup the bundle for it.
+            intent.putExtra(getString(R.string.key_recipe), recipe);
+
             startActivity(intent);
         }
     }
