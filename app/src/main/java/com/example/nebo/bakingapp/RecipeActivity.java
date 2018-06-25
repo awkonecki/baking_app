@@ -27,6 +27,10 @@ public class RecipeActivity extends AppCompatActivity {
         if (intent != null && intent.hasExtra(getString(R.string.key_recipe))) {
             this.mRecipe = intent.getParcelableExtra(getString(R.string.key_recipe));
         }
+
+        if (this.mRecipe != null) {
+            setTitle(this.mRecipe.getName());
+        }
     }
 
     /*
