@@ -15,6 +15,15 @@ import java.util.List;
 
 public class AppAdapter <D, VH extends AppView<D>> extends RecyclerView.Adapter<VH> {
     private List<D> mData = null;
+    private final AdapterOnClickListener LISTENER;
+
+    public interface AdapterOnClickListener {
+        void onClick(int position);
+    }
+
+    public AppAdapter(AdapterOnClickListener listener) {
+        this.LISTENER = listener;
+    }
 
     @NonNull
     @Override
@@ -24,7 +33,7 @@ public class AppAdapter <D, VH extends AppView<D>> extends RecyclerView.Adapter<
         RecipeItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.recipe_item, parent, false);
 
         // hard code the Recipe view for now.
-        RecipeView<D> recipeView = new RecipeView<D>(binding);
+        RecipeView<D> recipeView = new RecipeView<D>(binding, LISTENER);
 
         return (VH) recipeView;
     }
@@ -51,6 +60,15 @@ public class AppAdapter <D, VH extends AppView<D>> extends RecyclerView.Adapter<
             Log.d ("AppAdapter", "Updating the Adapter Data Set with " + Integer.toString(data.size()));
             this.mData = data;
             notifyDataSetChanged();
+        }
+    }
+
+    public D get(int index) {
+        if (index < 0 || index >= this.mData.size()) {
+            return null;
+        }
+        else {
+            return this.mData.get(index);
         }
     }
 }
