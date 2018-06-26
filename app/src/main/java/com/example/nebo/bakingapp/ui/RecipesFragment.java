@@ -17,7 +17,7 @@ import com.example.nebo.bakingapp.R;
 import com.example.nebo.bakingapp.RecipeActivity;
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.databinding.FragmentRecipesBinding;
-import com.example.nebo.bakingapp.view.RecipeView;
+import com.example.nebo.bakingapp.viewholder.RecipeViewHolder;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class RecipesFragment extends Fragment
         AppAdapter.AdapterOnClickListener {
 
     private FragmentRecipesBinding mBinding = null;
-    private AppAdapter<Recipe, RecipeView<Recipe>> mAdapter = null;
+    private AppAdapter<Recipe, RecipeViewHolder<Recipe>> mAdapter = null;
     private Context mContext;
 
     public RecipesFragment() {}
@@ -53,7 +53,7 @@ public class RecipesFragment extends Fragment
                         LinearLayoutManager.VERTICAL,
                         false);
 
-        mAdapter = new AppAdapter<>(this);
+        mAdapter = new AppAdapter<>(R.layout.recipe_item, this);
 
         mBinding.rvRecipes.setAdapter(mAdapter);
         mBinding.rvRecipes.setLayoutManager(layoutManager);

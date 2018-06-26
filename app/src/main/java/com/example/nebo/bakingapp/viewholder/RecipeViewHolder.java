@@ -1,16 +1,13 @@
-package com.example.nebo.bakingapp.view;
-
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
+package com.example.nebo.bakingapp.viewholder;
 
 import com.example.nebo.bakingapp.AppAdapter;
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.databinding.RecipeItemBinding;
 
-public class RecipeView <D> extends AppView<D> {
+public class RecipeViewHolder<D> extends AppViewHolder<D> {
     private final RecipeItemBinding BINDING;
 
-    public RecipeView(RecipeItemBinding binding, AppAdapter.AdapterOnClickListener listener) {
+    public RecipeViewHolder(RecipeItemBinding binding, AppAdapter.AdapterOnClickListener listener) {
         super(binding.getRoot(), listener);
         BINDING = binding;
     }

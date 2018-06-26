@@ -1,16 +1,15 @@
-package com.example.nebo.bakingapp.view;
+package com.example.nebo.bakingapp.viewholder;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.example.nebo.bakingapp.AppAdapter;
 
-public abstract class AppView <D> extends RecyclerView.ViewHolder implements View.OnClickListener{
+public abstract class AppViewHolder<D> extends RecyclerView.ViewHolder implements View.OnClickListener{
 
     private final AppAdapter.AdapterOnClickListener LISTENER;
 
-    public AppView(View view, AppAdapter.AdapterOnClickListener listener) {
+    public AppViewHolder(View view, AppAdapter.AdapterOnClickListener listener) {
         super(view);
         itemView.setOnClickListener(this);
         LISTENER = listener;

@@ -27,6 +27,8 @@ public class RecipeActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        Bundle bundle = new Bundle();
+
         // Determine if the activity is started from another, thus try to parse the activity desired
         // extras.
         Intent intent = getIntent();
@@ -36,18 +38,22 @@ public class RecipeActivity extends AppCompatActivity {
 
         if (this.mRecipe != null) {
             setTitle(this.mRecipe.getName());
+            bundle.putParcelableArrayList(
+                    getString(R.string.key_recipe_steps),
+                    this.mRecipe.getSteps());
         }
 
-
         RecipeStepsFragment stepsFragment = new RecipeStepsFragment();
-        RecipeNavigationFragment navigationFragment = new RecipeNavigationFragment();
-        RecipeIngredientFragment recipeIngredientFragment = new RecipeIngredientFragment();
+        stepsFragment.setArguments(bundle);
+
+        // RecipeNavigationFragment navigationFragment = new RecipeNavigationFragment();
+        // RecipeIngredientFragment recipeIngredientFragment = new RecipeIngredientFragment();
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragmentManager.beginTransaction().
-                add(R.id.fl_ingredients, recipeIngredientFragment).
+                // add(R.id.fl_ingredients, recipeIngredientFragment).
                 add(R.id.fl_recipe_steps, stepsFragment).
-                add(R.id.fl_navigation, navigationFragment).
+                // add(R.id.fl_navigation, navigationFragment).
                 commit();
 
     }

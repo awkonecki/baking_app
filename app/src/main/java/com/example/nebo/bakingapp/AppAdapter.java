@@ -8,20 +8,23 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.example.nebo.bakingapp.databinding.RecipeItemBinding;
-import com.example.nebo.bakingapp.view.AppView;
-import com.example.nebo.bakingapp.view.RecipeView;
+import com.example.nebo.bakingapp.viewholder.AppViewHolder;
+import com.example.nebo.bakingapp.viewholder.RecipeViewHolder;
+import com.example.nebo.bakingapp.viewholder.ViewHolderFactory;
 
 import java.util.List;
 
-public class AppAdapter <D, VH extends AppView<D>> extends RecyclerView.Adapter<VH> {
+public class AppAdapter <D, VH extends AppViewHolder<D>> extends RecyclerView.Adapter<VH> {
     private List<D> mData = null;
     private final AdapterOnClickListener LISTENER;
+    private final int LAYOUT_ID;
 
     public interface AdapterOnClickListener {
         void onClick(int position);
     }
 
-    public AppAdapter(AdapterOnClickListener listener) {
+    public AppAdapter(int layout, AdapterOnClickListener listener) {
+        this.LAYOUT_ID = layout;
         this.LISTENER = listener;
     }
 
@@ -29,13 +32,8 @@ public class AppAdapter <D, VH extends AppView<D>> extends RecyclerView.Adapter<
     @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-
-        RecipeItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.recipe_item, parent, false);
-
-        // hard code the Recipe view for now.
-        RecipeView<D> recipeView = new RecipeView<D>(binding, LISTENER);
-
-        return (VH) recipeView;
+        // Ugly type casting.
+        return (VH) ViewHolderFactory.createViewHolder(inflater, parent, this.LAYOUT_ID, LISTENER);
     }
 
     @Override

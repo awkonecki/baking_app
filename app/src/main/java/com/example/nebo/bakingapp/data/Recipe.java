@@ -18,6 +18,10 @@ public class Recipe implements Parcelable{
         return this.name;
     }
 
+    public ArrayList<RecipeStep> getSteps() {
+        return steps;
+    }
+
     private Recipe(Parcel src) {
         if (src != null) {
             this.id = src.readInt();
