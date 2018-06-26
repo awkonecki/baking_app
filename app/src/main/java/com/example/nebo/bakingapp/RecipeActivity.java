@@ -38,16 +38,15 @@ public class RecipeActivity extends AppCompatActivity {
             setTitle(this.mRecipe.getName());
         }
 
-
         RecipeStepsFragment stepsFragment = new RecipeStepsFragment();
-        RecipeNavigationFragment navigationFragment = new RecipeNavigationFragment();
-        RecipeIngredientFragment recipeIngredientFragment = new RecipeIngredientFragment();
+        // RecipeNavigationFragment navigationFragment = new RecipeNavigationFragment();
+        // RecipeIngredientFragment recipeIngredientFragment = new RecipeIngredientFragment();
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragmentManager.beginTransaction().
-                add(R.id.fl_ingredients, recipeIngredientFragment).
+                // add(R.id.fl_ingredients, recipeIngredientFragment).
                 add(R.id.fl_recipe_steps, stepsFragment).
-                add(R.id.fl_navigation, navigationFragment).
+                // add(R.id.fl_navigation, navigationFragment).
                 commit();
 
     }

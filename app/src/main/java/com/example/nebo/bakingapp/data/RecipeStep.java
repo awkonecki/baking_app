@@ -20,6 +20,14 @@ public class RecipeStep implements Parcelable {
         }
     }
 
+    public int getId() {
+        return this.id;
+    }
+
+    public String getShortDescription() {
+        return this.shortDescription;
+    }
+
     public static final Parcelable.Creator<RecipeStep> CREATOR = new Parcelable.Creator<RecipeStep>() {
 
         @Override
