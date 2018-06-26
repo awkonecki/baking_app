@@ -1,7 +1,6 @@
 package com.example.nebo.bakingapp.viewholder;
 
 import android.support.annotation.NonNull;
-import android.view.View;
 
 import com.example.nebo.bakingapp.AppAdapter.AdapterOnClickListener;
 import com.example.nebo.bakingapp.data.RecipeStep;
@@ -12,7 +11,8 @@ public class RecipeStepViewHolder <D> extends AppViewHolder<D> {
 
     private RecipeStepItemBinding mBinding = null;
 
-    public RecipeStepViewHolder(@NonNull RecipeStepItemBinding binding, AdapterOnClickListener listener) {
+    public RecipeStepViewHolder(@NonNull RecipeStepItemBinding binding,
+                                AdapterOnClickListener listener) {
         super(binding.getRoot(), listener);
         mBinding = binding;
     }
