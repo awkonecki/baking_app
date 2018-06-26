@@ -53,7 +53,7 @@ public class RecipesFragment extends Fragment
                         LinearLayoutManager.VERTICAL,
                         false);
 
-        mAdapter = new AppAdapter<>(this);
+        mAdapter = new AppAdapter<>(R.layout.recipe_item, this);
 
         mBinding.rvRecipes.setAdapter(mAdapter);
         mBinding.rvRecipes.setLayoutManager(layoutManager);

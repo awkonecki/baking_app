@@ -20,17 +20,19 @@ import com.example.nebo.bakingapp.viewholder.RecipeStepViewHolder;
 public class RecipeStepsFragment extends Fragment implements AppAdapter.AdapterOnClickListener {
 
     private FragmentRecipeStepsBinding mBinding = null;
-    private AppAdapter<RecipeStep, RecipeStepViewHolder<RecipeStep>> mAdapter = null
+    private AppAdapter<RecipeStep, RecipeStepViewHolder<RecipeStep>> mAdapter = null;
 
     public RecipeStepsFragment() {}
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_recipe_steps, container, false);
 
         // Creation of the recycler view constructs.
-        mAdapter = new AppAdapter<RecipeStep, RecipeStepViewHolder<RecipeStep>>(this);
+        mAdapter = new AppAdapter<RecipeStep, RecipeStepViewHolder<RecipeStep>>(R.layout.recipe_step_item,this);
 
         mBinding.rvRecipeSteps.setAdapter(mAdapter);
         mBinding.rvRecipeSteps.setLayoutManager(
