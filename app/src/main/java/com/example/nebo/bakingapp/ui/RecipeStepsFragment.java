@@ -17,10 +17,13 @@ import com.example.nebo.bakingapp.data.RecipeStep;
 import com.example.nebo.bakingapp.databinding.FragmentRecipeStepsBinding;
 import com.example.nebo.bakingapp.viewholder.RecipeStepViewHolder;
 
+import java.util.List;
+
 public class RecipeStepsFragment extends Fragment implements AppAdapter.AdapterOnClickListener {
 
     private FragmentRecipeStepsBinding mBinding = null;
     private AppAdapter<RecipeStep, RecipeStepViewHolder<RecipeStep>> mAdapter = null;
+    private List<RecipeStep> mRecipeSteps = null;
 
     public RecipeStepsFragment() {}
 
@@ -41,6 +44,15 @@ public class RecipeStepsFragment extends Fragment implements AppAdapter.AdapterO
                         LinearLayoutManager.VERTICAL,
                         false));
         mBinding.rvRecipeSteps.setHasFixedSize(true);
+
+        // Set the data of the adapter.
+        Bundle bundleArgs = getArguments();
+
+        if (bundleArgs != null && bundleArgs.containsKey(getString(R.string.key_recipe_steps))) {
+            mRecipeSteps = bundleArgs.getParcelableArrayList(getString(R.string.key_recipe_steps));
+        }
+
+        mAdapter.setData(mRecipeSteps);
 
         return mBinding.getRoot();
     }

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Baking App</string>
     <string name="key_recipe" translatable="false">recipe</string>
+    <string name="key_recipe_steps" translatable="false">recipe-steps</string>
 </resources>
