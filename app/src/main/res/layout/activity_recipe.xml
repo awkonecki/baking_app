@@ -21,19 +21,29 @@
             android:layout_height="wrap_content">
         </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/fl_recipe_details"
+        <!--
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </FrameLayout>
+            android:layout_height="match_parent"
+            android:baselineAligned="false">
+            -->
+            <FrameLayout
+                android:id="@+id/fl_recipe_details"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                >
+            </FrameLayout>
 
-        <!-- maybe something specific for navigation -->
-        <FrameLayout
-            android:id="@+id/fl_navigation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible">
-        </FrameLayout>
+            <!-- maybe something specific for navigation -->
+            <FrameLayout
+                android:id="@+id/fl_navigation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                >
+            </FrameLayout>
+        <!-- </LinearLayout> -->
 
     </android.support.constraint.ConstraintLayout>
 </layout>
