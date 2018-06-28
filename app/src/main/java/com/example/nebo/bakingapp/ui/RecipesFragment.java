@@ -92,20 +92,14 @@ public class RecipesFragment extends Fragment
 
     }
 
+    // This onClick is provided to the recycler view view handler objects.
     @Override
     public void onClick(int position) {
-        // On click event has occurred, so obtain the desire recipe from the adapter.
         Recipe recipe = mAdapter.get(position);
 
-        if (recipe != null) {
-            // now will perform an intent to switch to the activity that is responsible for
-            // rendering the details associated with the recipe.
-            Intent intent = new Intent(getContext(), RecipeActivity.class);
-
-            // Before starting the activity need to setup the bundle for it.
-            intent.putExtra(getString(R.string.key_recipe), recipe);
-
-            startActivity(intent);
+        if (recipe != null && mCallback != null) {
+            // Calls the fragment's instance of the host provided callback.
+            mCallback.onClickRecipe(recipe);
         }
     }
 }
