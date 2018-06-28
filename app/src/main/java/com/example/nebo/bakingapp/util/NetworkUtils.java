@@ -2,6 +2,7 @@ package com.example.nebo.bakingapp.util;
 
 import com.example.nebo.bakingapp.data.Recipe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -17,10 +18,10 @@ public class NetworkUtils {
 
     private interface RecipeService {
         @GET("baking.json")
-        Call<List<Recipe>> listRecipes();
+        Call<ArrayList<Recipe>> listRecipes();
     }
 
-    public static void getRecipesFromNetwork(Callback<List<Recipe>> callback) {
+    public static void getRecipesFromNetwork(Callback<ArrayList<Recipe>> callback) {
         // Build the retrofit element.
         Retrofit retrofit = new Retrofit.Builder().
                 baseUrl(sBaseEndPointAddress).
@@ -32,7 +33,7 @@ public class NetworkUtils {
         RecipeService recipeServiceClient = retrofit.create(RecipeService.class);
 
         // Get the call instance that is associated with the client.
-        Call<List<Recipe>> call = recipeServiceClient.listRecipes();
+        Call<ArrayList<Recipe>> call = recipeServiceClient.listRecipes();
 
         // Enqueue the call to be handled by the retrofit element associated with the client that
         // asynchronously handles the specified callback.

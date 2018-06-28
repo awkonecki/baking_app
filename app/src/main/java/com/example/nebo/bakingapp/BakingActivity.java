@@ -12,7 +12,19 @@ import com.example.nebo.bakingapp.databinding.ActivityBakingBinding;
 import com.example.nebo.bakingapp.ui.RecipesFragment;
 import com.example.nebo.bakingapp.util.NetworkUtils;
 
-public class BakingActivity extends AppCompatActivity implements RecipesFragment.OnClickRecipeListener {
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class BakingActivity extends AppCompatActivity
+        implements
+        RecipesFragment.OnClickRecipeListener,
+        Callback<ArrayList<Recipe>>
+{
+
     private ActivityBakingBinding mBinding = null;
 
     @Override
@@ -27,10 +39,30 @@ public class BakingActivity extends AppCompatActivity implements RecipesFragment
         RecipesFragment recipesFragment = new RecipesFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        fragmentManager.beginTransaction().add(R.id.fl_recipes, recipesFragment).addToBackStack(null).commit();
+        fragmentManager.beginTransaction().add(mBinding.flRecipes.getId(), recipesFragment).addToBackStack(null).commit();
 
         // now need to provide some logic to actually get the recipes.
-        NetworkUtils.getRecipesFromNetwork(recipesFragment);
+        NetworkUtils.getRecipesFromNetwork(this);
+    }
+
+    @Override
+    public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
+        if (response != null && response.body() != null) {
+            Bundle fragmentArgs = new Bundle();
+
+            fragmentArgs.putParcelableArrayList(getString(R.string.key_recipes), response.body());
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            RecipesFragment recipesFragment = new RecipesFragment();
+            recipesFragment.setArguments(fragmentArgs);
+
+            fragmentManager.beginTransaction().replace(mBinding.flRecipes.getId(), recipesFragment).commit();
+        }
+    }
+
+    @Override
+    public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
+
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.databinding.FragmentRecipesBinding;
 import com.example.nebo.bakingapp.viewholder.RecipeViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -26,8 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RecipesFragment extends Fragment
-        implements Callback<List<Recipe>>,
-        AppAdapter.AdapterOnClickListener {
+        implements AppAdapter.AdapterOnClickListener {
 
     private FragmentRecipesBinding mBinding = null;
     private AppAdapter<Recipe, RecipeViewHolder<Recipe>> mAdapter = null;
@@ -66,6 +66,12 @@ public class RecipesFragment extends Fragment
                 container,
                 false);
 
+        ArrayList<Recipe> recipes = null;
+
+        if (getArguments() != null && getArguments().containsKey(getString(R.string.key_recipes))) {
+            recipes = getArguments().getParcelableArrayList(getString(R.string.key_recipes));
+        }
+
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(getContext(),
                         LinearLayoutManager.VERTICAL,
@@ -77,19 +83,9 @@ public class RecipesFragment extends Fragment
         mBinding.rvRecipes.setLayoutManager(layoutManager);
         mBinding.rvRecipes.setHasFixedSize(true);
 
+        mAdapter.setData(recipes);
+
         return mBinding.getRoot();
-    }
-
-    @Override
-    public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-        if (response != null && response.body() != null) {
-            mAdapter.setData(response.body());
-        }
-    }
-
-    @Override
-    public void onFailure(Call<List<Recipe>> call, Throwable t) {
-
     }
 
     // This onClick is provided to the recycler view view handler objects.
