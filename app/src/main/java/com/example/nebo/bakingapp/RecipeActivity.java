@@ -8,12 +8,16 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.nebo.bakingapp.data.Recipe;
 
+import com.example.nebo.bakingapp.data.RecipeStep;
 import com.example.nebo.bakingapp.databinding.ActivityRecipeBinding;
 import com.example.nebo.bakingapp.ui.RecipeIngredientFragment;
 import com.example.nebo.bakingapp.ui.RecipeNavigationFragment;
 import com.example.nebo.bakingapp.ui.RecipeStepsFragment;
+import com.example.nebo.bakingapp.ui.RecipesFragment;
 
-public class RecipeActivity extends AppCompatActivity {
+public class RecipeActivity extends AppCompatActivity
+        implements RecipeStepsFragment.OnClickRecipeStepListener
+{
     private Recipe mRecipe = null;
     private ActivityRecipeBinding mBinding = null;
 
@@ -56,6 +60,13 @@ public class RecipeActivity extends AppCompatActivity {
                 // add(R.id.fl_navigation, navigationFragment).
                 commit();
 
+    }
+
+    @Override
+    public void onRecipeStepClick(RecipeStep recipeStep) {
+        Intent intent = new Intent(this, RecipeStepActivity.class);
+        intent.putExtra(getString(R.string.key_recipe_step), recipeStep);
+        startActivity(intent);
     }
 
     /*
