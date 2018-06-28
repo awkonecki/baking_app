@@ -22,7 +22,8 @@
         </activity>
 
         <activity android:name=".RecipeActivity"
-            android:parentActivityName=".BakingActivity" >
+            android:parentActivityName=".BakingActivity"
+            android:launchMode="singleTop">
 
         </activity>
 
