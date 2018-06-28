@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.databinding.ActivityBakingBinding;
@@ -35,5 +36,6 @@ public class BakingActivity extends AppCompatActivity implements RecipesFragment
     @Override
     public void onClickRecipe(Recipe recipe) {
         // now can launch the actual intent from the activity instead of from the fragment.
+        Log.d ("BakingActivity onClickRecipe", recipe.getName() + " has been clicked.");
     }
 }
