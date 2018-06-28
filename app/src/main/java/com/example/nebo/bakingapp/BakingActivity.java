@@ -1,5 +1,6 @@
 package com.example.nebo.bakingapp;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -68,6 +69,9 @@ public class BakingActivity extends AppCompatActivity
     @Override
     public void onClickRecipe(Recipe recipe) {
         // now can launch the actual intent from the activity instead of from the fragment.
-        Log.d ("BakingActivity onClickRecipe", recipe.getName() + " has been clicked.");
+        Intent intent = new Intent(this, RecipeActivity.class);
+        intent.putExtra(getString(R.string.key_recipe), recipe);
+
+        startActivity(intent);
     }
 }
