@@ -1,5 +1,6 @@
 package com.example.nebo.bakingapp.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -26,8 +27,27 @@ public class RecipeStepsFragment extends Fragment implements AppAdapter.AdapterO
     private FragmentRecipeStepsBinding mBinding = null;
     private AppAdapter<RecipeStep, RecipeStepViewHolder<RecipeStep>> mAdapter = null;
     private List<RecipeStep> mRecipeSteps = null;
+    private OnClickRecipeStepListener mCallback = null;
+
+    public interface OnClickRecipeStepListener {
+        void onRecipeStepClick(RecipeStep recipeStep);
+    }
 
     public RecipeStepsFragment() {}
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            mCallback = (OnClickRecipeStepListener) context;
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(
+                    e.toString() + " must implement the OnClickRecipeStepListener interface."
+            );
+        }
+    }
 
     @Nullable
     @Override
@@ -63,12 +83,8 @@ public class RecipeStepsFragment extends Fragment implements AppAdapter.AdapterO
     public void onClick(int position) {
         RecipeStep recipeStep = mAdapter.get(position);
 
-        // Explicit intent creation.
-        Intent intent = new Intent(getContext(), RecipeStepActivity.class);
-        intent.putExtra(getString(R.string.key_recipe_step), recipeStep);
-
-        startActivity(intent);
-
-        Log.d ("RecipeStepFragment", "Position Clicked " + Integer.toString(position));
+        if (mCallback != null) {
+            mCallback.onRecipeStepClick(recipeStep);
+        }
     }
 }
