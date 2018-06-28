@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Dont know how well data-binding will play with fragments. -->
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -8,11 +7,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- For now only going to account for possible text associated with the recipe step. -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_step_description"/>
+        <FrameLayout
+            android:id="@+id/fl_recipe_step_detail_description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_recipe_step_detail_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_recipe_step_detail_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_recipe_step_detail_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+        </FrameLayout>
 
     </android.support.constraint.ConstraintLayout>
 </layout>
