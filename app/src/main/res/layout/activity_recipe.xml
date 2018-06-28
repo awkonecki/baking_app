@@ -21,6 +21,12 @@
             android:layout_height="wrap_content">
         </FrameLayout>
 
+        <FrameLayout
+            android:id="@+id/fl_recipe_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </FrameLayout>
+
         <!-- maybe something specific for navigation -->
         <FrameLayout
             android:id="@+id/fl_navigation"

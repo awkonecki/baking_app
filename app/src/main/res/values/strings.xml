@@ -3,4 +3,5 @@
     <string name="key_recipe" translatable="false">recipe</string>
     <string name="key_recipe_steps" translatable="false">recipe-steps</string>
     <string name="key_recipe_step" translatable="false">recipe-step</string>
+    <string name="key_recipes" translatable="false">recipes</string>
 </resources>

@@ -19,6 +19,7 @@ import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.databinding.FragmentRecipesBinding;
 import com.example.nebo.bakingapp.viewholder.RecipeViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -26,14 +27,31 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RecipesFragment extends Fragment
-        implements Callback<List<Recipe>>,
-        AppAdapter.AdapterOnClickListener {
+        implements AppAdapter.AdapterOnClickListener {
 
     private FragmentRecipesBinding mBinding = null;
     private AppAdapter<Recipe, RecipeViewHolder<Recipe>> mAdapter = null;
-    private Context mContext;
+    private OnClickRecipeListener mCallback = null;
+
+    public interface OnClickRecipeListener {
+        void onClickRecipe(Recipe recipe);
+    }
 
     public RecipesFragment() {}
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            mCallback = (OnClickRecipeListener) context;
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(
+                    context.toString() + " must implement OnClickRecipeListener."
+            );
+        }
+    }
 
     @Nullable
     @Override
@@ -48,6 +66,12 @@ public class RecipesFragment extends Fragment
                 container,
                 false);
 
+        ArrayList<Recipe> recipes = null;
+
+        if (getArguments() != null && getArguments().containsKey(getString(R.string.key_recipes))) {
+            recipes = getArguments().getParcelableArrayList(getString(R.string.key_recipes));
+        }
+
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(getContext(),
                         LinearLayoutManager.VERTICAL,
@@ -59,35 +83,19 @@ public class RecipesFragment extends Fragment
         mBinding.rvRecipes.setLayoutManager(layoutManager);
         mBinding.rvRecipes.setHasFixedSize(true);
 
+        mAdapter.setData(recipes);
+
         return mBinding.getRoot();
     }
 
-    @Override
-    public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-        if (response != null && response.body() != null) {
-            mAdapter.setData(response.body());
-        }
-    }
-
-    @Override
-    public void onFailure(Call<List<Recipe>> call, Throwable t) {
-
-    }
-
+    // This onClick is provided to the recycler view view handler objects.
     @Override
     public void onClick(int position) {
-        // On click event has occurred, so obtain the desire recipe from the adapter.
         Recipe recipe = mAdapter.get(position);
 
-        if (recipe != null) {
-            // now will perform an intent to switch to the activity that is responsible for
-            // rendering the details associated with the recipe.
-            Intent intent = new Intent(getContext(), RecipeActivity.class);
-
-            // Before starting the activity need to setup the bundle for it.
-            intent.putExtra(getString(R.string.key_recipe), recipe);
-
-            startActivity(intent);
+        if (recipe != null && mCallback != null) {
+            // Calls the fragment's instance of the host provided callback.
+            mCallback.onClickRecipe(recipe);
         }
     }
 }
