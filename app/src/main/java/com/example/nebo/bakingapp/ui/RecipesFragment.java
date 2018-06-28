@@ -31,9 +31,27 @@ public class RecipesFragment extends Fragment
 
     private FragmentRecipesBinding mBinding = null;
     private AppAdapter<Recipe, RecipeViewHolder<Recipe>> mAdapter = null;
-    private Context mContext;
+    private OnClickRecipeListener mCallback = null;
+
+    public interface OnClickRecipeListener {
+        void onClickRecipe(Recipe recipe);
+    }
 
     public RecipesFragment() {}
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            mCallback = (OnClickRecipeListener) context;
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(
+                    context.toString() + " must implement OnClickRecipeListener."
+            );
+        }
+    }
 
     @Nullable
     @Override
