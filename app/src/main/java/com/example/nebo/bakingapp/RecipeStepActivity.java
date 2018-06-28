@@ -21,6 +21,10 @@ public class RecipeStepActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_step);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         // this activity will be launch via an intent thus will need to pull intent bundle.
         Intent intent = getIntent();
         Bundle args = null;

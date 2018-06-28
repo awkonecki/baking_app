@@ -1,5 +1,6 @@
 package com.example.nebo.bakingapp.ui;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.nebo.bakingapp.AppAdapter;
 import com.example.nebo.bakingapp.R;
+import com.example.nebo.bakingapp.RecipeStepActivity;
 import com.example.nebo.bakingapp.data.RecipeStep;
 import com.example.nebo.bakingapp.databinding.FragmentRecipeStepsBinding;
 import com.example.nebo.bakingapp.viewholder.RecipeStepViewHolder;
@@ -60,6 +62,12 @@ public class RecipeStepsFragment extends Fragment implements AppAdapter.AdapterO
     @Override
     public void onClick(int position) {
         RecipeStep recipeStep = mAdapter.get(position);
+
+        // Explicit intent creation.
+        Intent intent = new Intent(getContext(), RecipeStepActivity.class);
+        intent.putExtra(getString(R.string.key_recipe_step), recipeStep);
+
+        startActivity(intent);
 
         Log.d ("RecipeStepFragment", "Position Clicked " + Integer.toString(position));
     }
