@@ -13,7 +13,8 @@ import com.example.nebo.bakingapp.ui.RecipeStepDetailFragment;
 
 import com.example.nebo.bakingapp.databinding.ActivityRecipeDetailsBinding;
 
-public class RecipeDetailsActivity extends AppCompatActivity {
+public class RecipeDetailsActivity extends AppCompatActivity
+        implements RecipeNavigationFragment.NavigationOnClickListener {
     private Recipe mRecipe = null;
     private int mRecipeSetp = -1;
     private ActivityRecipeDetailsBinding mBinding;
@@ -82,5 +83,28 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 add(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
                 add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
                 commit();
+    }
+
+    @Override
+    public void onNavigationClick(int direction) {
+        mRecipeSetp = mRecipeSetp + direction;
+
+        if (mRecipeSetp == -1) {
+            // need to display the ingrediants for the recipe.
+        }
+        else if (mRecipeSetp < -1 || mRecipeSetp >= mRecipe.getSteps().size()) {
+            // the activity is done.  Go back to the RecipeActivity.
+            finish();
+        }
+        else {
+            RecipeStepDetailFragment recipeStepDetailFragment = new RecipeStepDetailFragment();
+            Bundle stepData = new Bundle();
+            stepData.putParcelable(getString(R.string.key_recipe_step), mRecipe.getStep(mRecipeSetp));
+            recipeStepDetailFragment.setArguments(stepData);
+
+            getSupportFragmentManager().beginTransaction().
+                    replace(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
+                    commit();
+        }
     }
 }
