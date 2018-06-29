@@ -22,6 +22,15 @@ public class Recipe implements Parcelable{
         return steps;
     }
 
+    public RecipeStep getStep(int position) {
+        if (position < 0 || this.steps == null || position >= this.steps.size()) {
+            return null;
+        }
+        else {
+            return this.steps.get(position);
+        }
+    }
+
     private Recipe(Parcel src) {
         if (src != null) {
             this.id = src.readInt();
