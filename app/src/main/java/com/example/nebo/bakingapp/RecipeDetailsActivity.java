@@ -80,7 +80,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         fragmentManager.beginTransaction().
                 add(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
-                // add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
+                add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
                 commit();
     }
 }
