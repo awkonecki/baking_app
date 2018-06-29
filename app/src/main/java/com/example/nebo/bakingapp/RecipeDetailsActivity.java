@@ -1,6 +1,7 @@
 package com.example.nebo.bakingapp;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,13 +10,17 @@ import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.ui.RecipeNavigationFragment;
 import com.example.nebo.bakingapp.ui.RecipeStepDetailFragment;
 
+import com.example.nebo.bakingapp.databinding.ActivityRecipeDetailsBinding;
+
 public class RecipeDetailsActivity extends AppCompatActivity {
     private Recipe mRecipe = null;
     private int mRecipeSetp = -1;
+    private ActivityRecipeDetailsBinding mBinding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_details);
 
         // Allow going back to the recipe activity.
         if (getSupportActionBar() != null) {
@@ -64,6 +69,9 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         // A common piece that will exist no matter what will be the navigation fragment.
         RecipeNavigationFragment recipeNavigationFragment = new RecipeNavigationFragment();
 
-        // fragmentManager.beginTransaction().add()
+        fragmentManager.beginTransaction().
+                add(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
+                add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
+                commit();
     }
 }
