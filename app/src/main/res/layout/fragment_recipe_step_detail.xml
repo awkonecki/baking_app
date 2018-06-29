@@ -12,15 +12,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!--
             <include
+                layout="@layout/include_recipe_step_description"
                 android:visibility="visible"
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="9"
                 />
-
+            <!--
             <include
                 android:visibility="visible"
                 android:id="@+id/video"
