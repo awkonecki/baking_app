@@ -85,8 +85,9 @@ public class RecipeActivity extends AppCompatActivity
 
     @Override
     public void onRecipeStepClick(RecipeStep recipeStep) {
-        Intent intent = new Intent(this, RecipeStepActivity.class);
-        intent.putExtra(getString(R.string.key_recipe_step), recipeStep);
+        Intent intent = new Intent(this, RecipeDetailsActivity.class);
+        intent.putExtra(getString(R.string.key_recipe), mRecipe);
+        intent.putExtra(getString(R.string.key_recipe_step_id), recipeStep.getId());
         startActivity(intent);
     }
 

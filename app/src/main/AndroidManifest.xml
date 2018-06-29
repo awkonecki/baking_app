@@ -28,7 +28,13 @@
         </activity>
 
         <activity android:name=".RecipeStepActivity"
-            android:parentActivityName=".RecipeActivity"/>
+            android:parentActivityName=".RecipeActivity" >
+        </activity>
+
+        <activity android:name=".RecipeDetailsActivity"
+            android:parentActivityName=".RecipeActivity" >
+
+        </activity>
 
     </application>
 
