@@ -41,6 +41,7 @@ public class RecipeStepDetailFragment extends Fragment {
 
         if (mRecipeStep != null) {
             mBinding.description.tvRecipeDescription.setText(mRecipeStep.getDescription());
+            // mBinding.tvRecipeDescriptionTemp.setText(mRecipeStep.getDescription());
         }
 
         if (mBinding != null) {

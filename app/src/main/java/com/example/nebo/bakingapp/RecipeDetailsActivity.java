@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.ui.RecipeNavigationFragment;
@@ -31,6 +32,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         // Get the data from the saved instance state or the intent.
         if (savedInstanceState != null) {
+            Log.d ("SavedInstanceState", "SavedInstance state is not null for recipeDetailsActivity");
             activityData = savedInstanceState.deepCopy();
         }
         else {
@@ -52,6 +54,13 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             }
         }
 
+        if (mRecipeSetp != -1 && mRecipe != null) {
+            setTitle(mRecipe.getStep(mRecipeSetp).getDescription());
+        }
+        else {
+            setTitle(getString(R.string.ingredients_label));
+        }
+
         // Now will need to manage the fragment that will be associated with the fragment host
         // activity.
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
@@ -71,7 +80,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         fragmentManager.beginTransaction().
                 add(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
-                add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
+                // add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
                 commit();
     }
 }
