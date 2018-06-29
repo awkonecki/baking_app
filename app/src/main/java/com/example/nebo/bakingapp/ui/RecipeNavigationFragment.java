@@ -16,12 +16,26 @@ import com.example.nebo.bakingapp.databinding.FragmentRecipeNavigationBinding;
 public class RecipeNavigationFragment extends Fragment {
 
     private FragmentRecipeNavigationBinding mBinding = null;
+    private NavigationOnClickListener mCallback = null;
 
     public RecipeNavigationFragment() {}
+
+    public interface NavigationOnClickListener {
+        void onNavigationClick(int direction);
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        try {
+            mCallback = (NavigationOnClickListener) context;
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(
+                    context.toString() + " must implement the NavigationOnClickListener."
+            );
+        }
     }
 
     @Nullable
@@ -38,6 +52,20 @@ public class RecipeNavigationFragment extends Fragment {
             return null;
         }
         else {
+            mBinding.ivBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RecipeNavigationFragment.this.mCallback.onNavigationClick(-1);
+                }
+            });
+
+            mBinding.ivForward.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RecipeNavigationFragment.this.mCallback.onNavigationClick(1);
+                }
+            });
+
             return mBinding.getRoot();
         }
     }
