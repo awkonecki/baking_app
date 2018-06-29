@@ -11,10 +11,7 @@ import com.example.nebo.bakingapp.data.Recipe;
 
 import com.example.nebo.bakingapp.data.RecipeStep;
 import com.example.nebo.bakingapp.databinding.ActivityRecipeBinding;
-import com.example.nebo.bakingapp.ui.RecipeIngredientFragment;
-import com.example.nebo.bakingapp.ui.RecipeNavigationFragment;
 import com.example.nebo.bakingapp.ui.RecipeStepsFragment;
-import com.example.nebo.bakingapp.ui.RecipesFragment;
 
 public class RecipeActivity extends AppCompatActivity
         implements RecipeStepsFragment.OnClickRecipeStepListener
@@ -62,7 +59,7 @@ public class RecipeActivity extends AppCompatActivity
         stepsFragment.setArguments(bundle);
 
         // RecipeNavigationFragment navigationFragment = new RecipeNavigationFragment();
-        // RecipeIngredientFragment recipeIngredientFragment = new RecipeIngredientFragment();
+        // RecipeIngredientsFragment recipeIngredientFragment = new RecipeIngredientsFragment();
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragmentManager.beginTransaction().
@@ -85,8 +82,9 @@ public class RecipeActivity extends AppCompatActivity
 
     @Override
     public void onRecipeStepClick(RecipeStep recipeStep) {
-        Intent intent = new Intent(this, RecipeStepActivity.class);
-        intent.putExtra(getString(R.string.key_recipe_step), recipeStep);
+        Intent intent = new Intent(this, RecipeDetailsActivity.class);
+        intent.putExtra(getString(R.string.key_recipe), mRecipe);
+        intent.putExtra(getString(R.string.key_recipe_step_id), recipeStep.getId());
         startActivity(intent);
     }
 
