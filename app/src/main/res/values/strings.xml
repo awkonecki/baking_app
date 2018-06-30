@@ -6,4 +6,5 @@
     <string name="key_recipe_step" translatable="false">recipe-step</string>
     <string name="key_recipes" translatable="false">recipes</string>
     <string name="key_recipe_step_id" translatable="false">recipe-step-id</string>
+    <string name="key_recipe_ingredients" translatable="false">recipe-ingredients</string>
 </resources>

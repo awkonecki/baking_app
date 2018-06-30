@@ -47,6 +47,14 @@ public class RecipeIngredientsFragment extends Fragment {
             mBinding.rvRecipeIngredients.setAdapter(mAdapter);
             mBinding.rvRecipeIngredients.setHasFixedSize(true);
 
+            Bundle fragmentArgs = getArguments();
+            if (fragmentArgs != null &&
+                    fragmentArgs.containsKey(getString(R.string.key_recipe_ingredients)))
+            {
+                mAdapter.setData(fragmentArgs.<Ingredient>getParcelableArrayList(
+                        getString(R.string.key_recipe_ingredients)));
+            }
+
             return mBinding.getRoot();
         }
         else {
