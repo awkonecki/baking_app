@@ -2,7 +2,6 @@ package com.example.nebo.bakingapp.viewholder;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
