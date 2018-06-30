@@ -57,10 +57,10 @@ public class RecipeDetailsActivity extends AppCompatActivity
         }
 
         if (mRecipeStep != -1 && mRecipe != null) {
-            setTitle(mRecipe.getStep(mRecipeStep).getDescription());
+            setTitle(mRecipe.getName() + " - Step " + Integer.toString(mRecipeStep));
         }
         else {
-            setTitle(getString(R.string.ingredients_label));
+            setTitle(mRecipe.getName() + " - " + getString(R.string.ingredients_label));
         }
 
         // Now will need to manage the fragment that will be associated with the fragment host
@@ -128,6 +128,8 @@ public class RecipeDetailsActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().
                     replace(mBinding.flRecipeDetail.getId(), recipeIngredientsFragment).
                     commit();
+
+            setTitle(mRecipe.getName() + " - " + getString(R.string.ingredients_label));
         }
         else if (mRecipeStep < -1 || mRecipeStep >= mRecipe.getSteps().size()) {
             // the activity is done.  Go back to the RecipeActivity.
@@ -142,6 +144,8 @@ public class RecipeDetailsActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().
                     replace(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
                     commit();
+
+            setTitle(mRecipe.getName() + " - Step " + Integer.toString(mRecipeStep));
         }
     }
 }
