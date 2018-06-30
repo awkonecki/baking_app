@@ -8,6 +8,18 @@ public class Ingredient implements Parcelable {
     private String measure;
     private String ingredient;
 
+    public float getQuantity() {
+        return quantity;
+    }
+
+    public String getIngredient() {
+        return ingredient;
+    }
+
+    public String getMeasure() {
+        return measure;
+    }
+
     private Ingredient(Parcel src) {
         if (src != null) {
             this.quantity = src.readFloat();

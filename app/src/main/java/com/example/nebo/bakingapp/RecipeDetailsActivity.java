@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.nebo.bakingapp.data.Recipe;
+import com.example.nebo.bakingapp.ui.RecipeIngredientsFragment;
 import com.example.nebo.bakingapp.ui.RecipeNavigationFragment;
 import com.example.nebo.bakingapp.ui.RecipeStepDetailFragment;
 
@@ -16,7 +17,7 @@ import com.example.nebo.bakingapp.databinding.ActivityRecipeDetailsBinding;
 public class RecipeDetailsActivity extends AppCompatActivity
         implements RecipeNavigationFragment.NavigationOnClickListener {
     private Recipe mRecipe = null;
-    private int mRecipeSetp = -1;
+    private int mRecipeStep = -1;
     private ActivityRecipeDetailsBinding mBinding;
 
     @Override
@@ -51,12 +52,12 @@ public class RecipeDetailsActivity extends AppCompatActivity
             }
 
             if (activityData.containsKey(getString(R.string.key_recipe_step_id))) {
-                mRecipeSetp = activityData.getInt(getString(R.string.key_recipe_step_id));
+                mRecipeStep = activityData.getInt(getString(R.string.key_recipe_step_id));
             }
         }
 
-        if (mRecipeSetp != -1 && mRecipe != null) {
-            setTitle(mRecipe.getStep(mRecipeSetp).getDescription());
+        if (mRecipeStep != -1 && mRecipe != null) {
+            setTitle(mRecipe.getStep(mRecipeStep).getDescription());
         }
         else {
             setTitle(getString(R.string.ingredients_label));
@@ -70,36 +71,72 @@ public class RecipeDetailsActivity extends AppCompatActivity
         // One for the ingredients
         // One for a recipe step
 
-        // For now only working with recipe step.
-        RecipeStepDetailFragment recipeStepDetailFragment = new RecipeStepDetailFragment();
-        Bundle stepData = new Bundle();
-        stepData.putParcelable(getString(R.string.key_recipe_step), mRecipe.getStep(mRecipeSetp));
-        recipeStepDetailFragment.setArguments(stepData);
+        if (mRecipeStep > -1 &&
+                mRecipe != null &&
+                mRecipe.getSteps() != null &&
+                mRecipeStep < mRecipe.getSteps().size())
+        {
+            // For now only working with recipe step.
+            RecipeStepDetailFragment recipeStepDetailFragment = new RecipeStepDetailFragment();
+            Bundle stepData = new Bundle();
+            stepData.putParcelable(getString(R.string.key_recipe_step), mRecipe.getStep(mRecipeStep));
+            recipeStepDetailFragment.setArguments(stepData);
 
-        // A common piece that will exist no matter what will be the navigation fragment.
-        RecipeNavigationFragment recipeNavigationFragment = new RecipeNavigationFragment();
+            // A common piece that will exist no matter what will be the navigation fragment.
+            RecipeNavigationFragment recipeNavigationFragment = new RecipeNavigationFragment();
 
-        fragmentManager.beginTransaction().
-                add(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
-                add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
-                commit();
+            fragmentManager.beginTransaction().
+                    add(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
+                    add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
+                    commit();
+        }
+        else if (mRecipeStep == -1 && mRecipe != null) {
+            RecipeIngredientsFragment recipeIngredientsFragment = new RecipeIngredientsFragment();
+            Bundle ingredientData = new Bundle();
+            ingredientData.putParcelableArrayList(
+                    getString(R.string.key_recipe_ingredients),
+                    mRecipe.getIngredients());
+            recipeIngredientsFragment.setArguments(ingredientData);
+
+            // A common piece that will exist no matter what will be the navigation fragment.
+            RecipeNavigationFragment recipeNavigationFragment = new RecipeNavigationFragment();
+
+            fragmentManager.beginTransaction().
+                    add(mBinding.flRecipeDetail.getId(), recipeIngredientsFragment).
+                    add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
+                    commit();
+        }
+        else {
+            // Index out of supported range.
+            finish();
+        }
     }
 
     @Override
     public void onNavigationClick(int direction) {
-        mRecipeSetp = mRecipeSetp + direction;
+        mRecipeStep = mRecipeStep + direction;
 
-        if (mRecipeSetp == -1) {
+        if (mRecipeStep == -1) {
             // need to display the ingrediants for the recipe.
+            RecipeIngredientsFragment recipeIngredientsFragment = new RecipeIngredientsFragment();
+            Bundle ingredientData = new Bundle();
+            ingredientData.putParcelableArrayList(
+                    getString(R.string.key_recipe_ingredients),
+                    mRecipe.getIngredients());
+            recipeIngredientsFragment.setArguments(ingredientData);
+
+            getSupportFragmentManager().beginTransaction().
+                    replace(mBinding.flRecipeDetail.getId(), recipeIngredientsFragment).
+                    commit();
         }
-        else if (mRecipeSetp < -1 || mRecipeSetp >= mRecipe.getSteps().size()) {
+        else if (mRecipeStep < -1 || mRecipeStep >= mRecipe.getSteps().size()) {
             // the activity is done.  Go back to the RecipeActivity.
             finish();
         }
         else {
             RecipeStepDetailFragment recipeStepDetailFragment = new RecipeStepDetailFragment();
             Bundle stepData = new Bundle();
-            stepData.putParcelable(getString(R.string.key_recipe_step), mRecipe.getStep(mRecipeSetp));
+            stepData.putParcelable(getString(R.string.key_recipe_step), mRecipe.getStep(mRecipeStep));
             recipeStepDetailFragment.setArguments(stepData);
 
             getSupportFragmentManager().beginTransaction().

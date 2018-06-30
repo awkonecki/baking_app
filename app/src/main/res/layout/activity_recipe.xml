@@ -7,19 +7,23 @@
         android:layout_height="match_parent">
 
         <!-- will allow for expanding into the ingredients activity -->
-        <FrameLayout
-            android:id="@+id/fl_ingredients"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible">
-        </FrameLayout>
-
-        <!-- recycler view of all the steps associated with the recipe. -->
-        <FrameLayout
-            android:id="@+id/fl_recipe_steps"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </FrameLayout>
+            android:layout_height="match_parent">
+            <FrameLayout
+                android:id="@+id/fl_ingredients"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </FrameLayout>
+
+            <!-- recycler view of all the steps associated with the recipe. -->
+            <FrameLayout
+                android:id="@+id/fl_recipe_steps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </FrameLayout>
+        </LinearLayout>
 
         <!--
         <LinearLayout

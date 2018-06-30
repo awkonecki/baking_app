@@ -22,6 +22,10 @@ public class Recipe implements Parcelable{
         return steps;
     }
 
+    public ArrayList<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
     public RecipeStep getStep(int position) {
         if (position < 0 || this.steps == null || position >= this.steps.size()) {
             return null;
