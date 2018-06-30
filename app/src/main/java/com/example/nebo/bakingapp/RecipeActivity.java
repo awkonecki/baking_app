@@ -11,10 +11,12 @@ import com.example.nebo.bakingapp.data.Recipe;
 
 import com.example.nebo.bakingapp.data.RecipeStep;
 import com.example.nebo.bakingapp.databinding.ActivityRecipeBinding;
+import com.example.nebo.bakingapp.ui.RecipeIngredientsSelectionFragment;
 import com.example.nebo.bakingapp.ui.RecipeStepsFragment;
 
 public class RecipeActivity extends AppCompatActivity
-        implements RecipeStepsFragment.OnClickRecipeStepListener
+        implements RecipeStepsFragment.OnClickRecipeStepListener,
+        RecipeIngredientsSelectionFragment.OnClickIngredientsListener
 {
     private Recipe mRecipe = null;
     private ActivityRecipeBinding mBinding = null;
@@ -59,11 +61,11 @@ public class RecipeActivity extends AppCompatActivity
         stepsFragment.setArguments(bundle);
 
         // RecipeNavigationFragment navigationFragment = new RecipeNavigationFragment();
-        // RecipeIngredientsFragment recipeIngredientFragment = new RecipeIngredientsFragment();
+        RecipeIngredientsSelectionFragment recipeIngredientFragment = new RecipeIngredientsSelectionFragment();
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragmentManager.beginTransaction().
-                // add(R.id.fl_ingredients, recipeIngredientFragment).
+                add(R.id.fl_ingredients, recipeIngredientFragment).
                 add(R.id.fl_recipe_steps, stepsFragment).
                 // add(R.id.fl_navigation, navigationFragment).
                 commit();
@@ -85,6 +87,14 @@ public class RecipeActivity extends AppCompatActivity
         Intent intent = new Intent(this, RecipeDetailsActivity.class);
         intent.putExtra(getString(R.string.key_recipe), mRecipe);
         intent.putExtra(getString(R.string.key_recipe_step_id), recipeStep.getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onIngredientsClick() {
+        Intent intent = new Intent(this, RecipeDetailsActivity.class);
+        intent.putExtra(getString(R.string.key_recipe), mRecipe);
+        intent.putExtra(getString(R.string.key_recipe_step_id), -1);
         startActivity(intent);
     }
 
