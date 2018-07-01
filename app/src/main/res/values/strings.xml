@@ -7,4 +7,6 @@
     <string name="key_recipes" translatable="false">recipes</string>
     <string name="key_recipe_step_id" translatable="false">recipe-step-id</string>
     <string name="key_recipe_ingredients" translatable="false">recipe-ingredients</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
