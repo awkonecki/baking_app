@@ -22,6 +22,8 @@ public class BakingWidgetProvider extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
+    // By default is called when the time limit expires as specified within the
+    // `baking_widget_info.xml` resource file.
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them

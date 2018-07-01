@@ -3,25 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#09C"
-    android:padding="@dimen/widget_margin">
+    android:padding="@dimen/widget_margin"
+    android:orientation="vertical">
 
     <ImageView
+        android:src="@drawable/ic_cake_black_40dp"
+        android:layout_weight="2"
+        android:layout_gravity="top|center_vertical"
         android:id="@+id/appwidget_image"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp" />
 
     <TextView
+        android:layout_weight="1"
         android:id="@+id/appwidget_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:background="#09C"
+        android:layout_marginTop="4dp"
         android:contentDescription="@string/appwidget_text"
         android:text="@string/appwidget_text"
         android:textColor="#ffffff"
-        android:textSize="24sp"
+        android:textSize="8sp"
         android:textStyle="bold|italic" />
 
 </LinearLayout>
