@@ -23,7 +23,8 @@ public class BakingWidgetProvider extends AppWidgetProvider {
         Intent intent = new Intent(context, BakingActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        views.setOnClickPendingIntent(R.id.appwidget_image, pendingIntent);
+        // setup support for click anywhere on the widget.
+        views.setOnClickPendingIntent(R.id.ll_widget, pendingIntent);
 
         views.setTextViewText(R.id.appwidget_text, widgetText);
 
