@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.nebo.bakingapp">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,8 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".BakingActivity"
+        <activity
+            android:name=".BakingActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,18 +20,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".RecipeActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".BakingActivity"></activity>
+        <activity
+            android:name=".RecipeDetailsActivity"
+            android:parentActivityName=".RecipeActivity"></activity>
 
-        <activity android:name=".RecipeActivity"
-            android:parentActivityName=".BakingActivity"
-            android:launchMode="singleTop">
+        <receiver android:name=".BakingWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
 
-        </activity>
-
-        <activity android:name=".RecipeDetailsActivity"
-            android:parentActivityName=".RecipeActivity" >
-
-        </activity>
-
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/baking_widget_info" />
+        </receiver>
     </application>
-
 </manifest>
