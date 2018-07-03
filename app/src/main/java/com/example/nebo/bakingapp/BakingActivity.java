@@ -1,16 +1,24 @@
 package com.example.nebo.bakingapp;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.nebo.bakingapp.data.Ingredient;
 import com.example.nebo.bakingapp.data.Recipe;
+import com.example.nebo.bakingapp.data.RecipeContract;
 import com.example.nebo.bakingapp.databinding.ActivityBakingBinding;
 import com.example.nebo.bakingapp.ui.RecipesFragment;
 import com.example.nebo.bakingapp.util.NetworkUtils;
@@ -25,7 +33,8 @@ import retrofit2.Response;
 public class BakingActivity extends AppCompatActivity
         implements
         RecipesFragment.OnClickRecipeListener,
-        Callback<ArrayList<Recipe>>
+        Callback<ArrayList<Recipe>>,
+        LoaderManager.LoaderCallbacks<Cursor>
 {
 
     private ActivityBakingBinding mBinding = null;
@@ -61,6 +70,28 @@ public class BakingActivity extends AppCompatActivity
             recipesFragment.setArguments(fragmentArgs);
 
             fragmentManager.beginTransaction().replace(mBinding.flRecipes.getId(), recipesFragment).commit();
+
+            // Time to now insert the data into the database if the recipe does not already exist.
+            ContentResolver resolver = getContentResolver();
+
+            for (Recipe recipe : response.body()) {
+
+
+                for (Ingredient ingredient : recipe.getIngredients()) {
+                    // Construct the content values
+                    ContentValues values = new ContentValues();
+                    values.put(RecipeContract.RecipeIngredient.COLUMN_RECIPE_NAME,
+                            recipe.getName());
+                    values.put(RecipeContract.RecipeIngredient.COLUMN_INGREDIENT,
+                            ingredient.getIngredient());
+                    values.put(RecipeContract.RecipeIngredient.COLUMN_MEASURING,
+                            ingredient.getMeasure());
+                    values.put(RecipeContract.RecipeIngredient.COLUMN_QUANTITY,
+                            ingredient.getQuantity());
+
+                    resolver.insert(RecipeContract.RecipeIngredient.CONTENT_URI, values);
+                }
+            }
         }
     }
 
@@ -76,5 +107,21 @@ public class BakingActivity extends AppCompatActivity
         intent.putExtra(getString(R.string.key_recipe), recipe);
 
         startActivity(intent);
+    }
+
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+
     }
 }
