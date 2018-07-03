@@ -23,10 +23,10 @@
         <activity
             android:name=".RecipeActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".BakingActivity"></activity>
+            android:parentActivityName=".BakingActivity" />
         <activity
             android:name=".RecipeDetailsActivity"
-            android:parentActivityName=".RecipeActivity"></activity>
+            android:parentActivityName=".RecipeActivity" />
 
         <receiver android:name=".BakingWidgetProvider">
             <intent-filter>
@@ -37,5 +37,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/baking_widget_info" />
         </receiver>
+
+        <provider
+            android:authorities="com.example.nebo.bakingapp"
+            android:name=".data.RecipeContentProvider"
+            android:exported="false"/>
     </application>
 </manifest>
