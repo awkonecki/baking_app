@@ -26,7 +26,7 @@ public class BakingWidgetProvider extends AppWidgetProvider {
         // setup support for click anywhere on the widget.
         views.setOnClickPendingIntent(R.id.ll_widget, pendingIntent);
 
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+        // views.setTextViewText(R.id.appwidget_text, widgetText);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

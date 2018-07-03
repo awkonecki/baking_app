@@ -29,6 +29,7 @@ public class BakingActivity extends AppCompatActivity
 {
 
     private ActivityBakingBinding mBinding = null;
+    // private IngredientDataBase mDb = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
