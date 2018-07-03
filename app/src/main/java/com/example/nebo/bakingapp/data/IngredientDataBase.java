@@ -1,6 +1,6 @@
 package com.example.nebo.bakingapp.data;
 
-
+/*
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
@@ -8,7 +8,8 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 @Database(entities = {Ingredient.class}, version = 1, exportSchema = false)
-public abstract class IngredientDataBase  extends RoomDatabase {
+*/
+public abstract class IngredientDataBase { /*} extends RoomDatabase {
     private static final Object LOCK = new Object();
     private static final String DATABASE_NAME = "recipe_ingredients";
     private static IngredientDataBase sInstance;
@@ -21,5 +22,5 @@ public abstract class IngredientDataBase  extends RoomDatabase {
             }
         }
         return sInstance;
-    }
+    }*/
 }

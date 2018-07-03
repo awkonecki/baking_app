@@ -37,5 +37,9 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/baking_widget_info" />
         </receiver>
+
+        <provider
+            android:authorities="com.example.nebo.bakingapp.data.RecipeContentProvider"
+            android:name=".data.RecipeContentProvider" />
     </application>
 </manifest>
