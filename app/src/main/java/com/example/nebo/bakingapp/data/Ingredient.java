@@ -1,12 +1,26 @@
 package com.example.nebo.bakingapp.data;
 
+//import android.arch.persistence.room.Entity;
+//import android.arch.persistence.room.Ignore;
+//import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+//@Entity (tableName="ingredient")
 public class Ingredient implements Parcelable {
+
+    //@PrimaryKey(autoGenerate = true)
+    private int id;
     private float quantity;
     private String measure;
     private String ingredient;
+
+    public Ingredient(int id, float quantity, String measure, String ingredient) {
+        this.id = id;
+        this.quantity = quantity;
+        this.measure = measure;
+        this.ingredient = ingredient;
+    }
 
     public float getQuantity() {
         return quantity;
@@ -20,6 +34,7 @@ public class Ingredient implements Parcelable {
         return measure;
     }
 
+    //@Ignore
     private Ingredient(Parcel src) {
         if (src != null) {
             this.quantity = src.readFloat();
