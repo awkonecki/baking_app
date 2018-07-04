@@ -42,5 +42,7 @@
             android:authorities="com.example.nebo.bakingapp"
             android:name=".data.RecipeContentProvider"
             android:exported="false"/>
+
+        <service android:name=".service.IngredientService" />
     </application>
 </manifest>

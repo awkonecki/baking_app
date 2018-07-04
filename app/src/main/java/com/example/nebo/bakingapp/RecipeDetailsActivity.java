@@ -117,8 +117,8 @@ public class RecipeDetailsActivity extends AppCompatActivity
     @Override
     public void onNavigationClick(int direction) {
         mRecipeStep = mRecipeStep + direction;
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                getApplicationContext());
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                getString(R.string.shared_preferences_name), MODE_PRIVATE);
 
         if (mRecipeStep < -1 || mRecipeStep >= mRecipe.getSteps().size()) {
             // the step is outside of the scope of the recipe, thus the user might have completed

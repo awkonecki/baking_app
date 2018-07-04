@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +21,8 @@ import com.example.nebo.bakingapp.ui.RecipeStepsFragment;
 public class RecipeActivity extends AppCompatActivity
         implements RecipeStepsFragment.OnClickRecipeStepListener,
         RecipeIngredientsSelectionFragment.OnClickIngredientsListener,
-        View.OnClickListener
+        View.OnClickListener,
+        SharedPreferences.OnSharedPreferenceChangeListener
 {
     private Recipe mRecipe = null;
     private ActivityRecipeBinding mBinding = null;
@@ -66,8 +68,9 @@ public class RecipeActivity extends AppCompatActivity
 
         // Populate the text of the button to be either `Start Recipe` or `Continue Recipe` based
         // on if shared preferences is set.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                getApplicationContext());
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                getString(R.string.shared_preferences_name), MODE_PRIVATE);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         if (sharedPreferences.contains(getString(R.string.key_recipe)) && mRecipe != null) {
             if (sharedPreferences.getString(getString(R.string.key_recipe), "").
@@ -90,6 +93,13 @@ public class RecipeActivity extends AppCompatActivity
                 // add(R.id.fl_navigation, navigationFragment).
                 commit();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(
+                getApplicationContext()).unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -134,8 +144,8 @@ public class RecipeActivity extends AppCompatActivity
         int recipeStep = -1;
 
         // if the current recipe name is the same as the one stored, use the page to go straight to
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                getApplicationContext());
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                getString(R.string.shared_preferences_name), MODE_PRIVATE);
 
         if (mRecipe == null) {
             Log.d ("RecipeActivity", "Null Recipe State Detected in onClick");
@@ -158,6 +168,13 @@ public class RecipeActivity extends AppCompatActivity
         }
 
         startContinueBakingRecipe(recipeStep);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key != null && !key.isEmpty()) {
+            mBinding.btnStartContinue.setText(getString(R.string.recipe_selection_continue_label));
+        }
     }
 
     /*

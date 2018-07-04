@@ -13,4 +13,5 @@
 
     <string name="recipe_selection_start_label" translatable="true">Start Recipe</string>
     <string name="recipe_selection_continue_label" translatable="true">Continue Recipe</string>
+    <string name="shared_preferences_name" translatable="false">Baking Preferences</string>
 </resources>
