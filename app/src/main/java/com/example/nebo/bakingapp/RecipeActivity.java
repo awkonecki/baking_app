@@ -131,23 +131,33 @@ public class RecipeActivity extends AppCompatActivity
         // Method for starting or resuming a recipe.  Application will only support one at a time.
         // No matter what the view will check the shared preferences to determine the last recipe
         // and page navigated to.
+        int recipeStep = -1;
 
         // if the current recipe name is the same as the one stored, use the page to go straight to
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                 getApplicationContext());
 
-        if (sharedPreferences.contains(getString(R.string.key_recipe)) && mRecipe != null) {
-            if (sharedPreferences.getString(getString(R.string.key_recipe), "").
-                    equals(mRecipe.getName()))
-            {
-                int recipeStep = -1;
-
-                recipeStep = sharedPreferences.getInt(
-                        getString(R.string.key_recipe_step_id), -1);
-
-                startContinueBakingRecipe(recipeStep);
-            }
+        if (mRecipe == null) {
+            Log.d ("RecipeActivity", "Null Recipe State Detected in onClick");
+            return;
         }
+
+
+        if (sharedPreferences.getString(getString(R.string.key_recipe), "").
+                equals(mRecipe.getName()))
+        {
+            recipeStep = sharedPreferences.getInt(
+                    getString(R.string.key_recipe_step_id), -1);
+        }
+        else {
+            // Store the current recipe as the current recipe for the user.
+            sharedPreferences.edit().
+                    putString(getString(R.string.key_recipe), mRecipe.getName()).
+                    putInt(getString(R.string.key_recipe_step_id), recipeStep).
+                    apply();
+        }
+
+        startContinueBakingRecipe(recipeStep);
     }
 
     /*
