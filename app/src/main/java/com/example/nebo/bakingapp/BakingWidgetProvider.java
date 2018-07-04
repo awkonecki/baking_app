@@ -15,11 +15,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.nebo.bakingapp.data.Ingredient;
 import com.example.nebo.bakingapp.service.IngredientService;
+import com.example.nebo.bakingapp.service.ListViewWidgetService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -29,26 +32,48 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class BakingWidgetProvider extends AppWidgetProvider
 {
-    private static final int DB_QUERY_ID = 100;
+    public static final String EXTRA_ITEM = "com.example.nebo.bakingapp.EXTRA_ITEM";
 
     static void updateAppWidget(Context context,
                                 AppWidgetManager appWidgetManager,
-                                List<Ingredient> ingredientList,
+                                ArrayList<Ingredient> ingredientList,
+                                String recipeName,
                                 int appWidgetId)
     {
-        if (ingredientList == null) {
+        String widgetRecipeText = null;
 
+        if (recipeName == null || recipeName.isEmpty()) {
+            widgetRecipeText =
+                    context.getResources().getString(R.string.default_recipe_widget_text);
         }
         else {
-
+            widgetRecipeText = recipeName;
         }
+
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);
+        views.setTextViewText(R.id.tv_widget_recipe_name, widgetRecipeText);
+
+        if (ingredientList != null) {
+            Log.d("BakingWidgetProvider", Integer.toString(ingredientList.size()));
+        }
+        else {
+            Log.d("BakingWidgetProvider", "ingredient list is null.");
+        }
+
+        Intent intent = new Intent(context, ListViewWidgetService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        intent.putExtra(context.getResources().getString(R.string.key_recipe_ingredients),
+                ingredientList);
+
+        views.setRemoteAdapter(R.id.lv_widget_ingredient_list, intent);
+        views.setEmptyView(R.id.lv_widget_ingredient_list, R.id.empty_view);
 
         // CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         // RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);
 
-        Intent intent = new Intent(context, BakingActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // Intent intent = new Intent(context, BakingActivity.class);
+        // PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // setup support for click anywhere on the widget.
         // views.setOnClickPendingIntent(R.id.ll_widget, pendingIntent);
@@ -56,17 +81,17 @@ public class BakingWidgetProvider extends AppWidgetProvider
         // views.setTextViewText(R.id.appwidget_text, widgetText);
 
         // Instruct the widget manager to update the widget
-        // appWidgetManager.updateAppWidget(appWidgetId, views);
+        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     public static void updateRecipeIngredientListWidgets(Context context,
                                                          AppWidgetManager appWidgetManager,
-                                                         List<Ingredient> ingredientList,
+                                                         ArrayList<Ingredient> ingredientList,
                                                          String recipeName,
                                                          int [] appWidgetIds)
     {
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, ingredientList, appWidgetId);
+            updateAppWidget(context, appWidgetManager, ingredientList, recipeName, appWidgetId);
         }
     }
 

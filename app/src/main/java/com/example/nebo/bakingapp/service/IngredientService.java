@@ -36,7 +36,7 @@ public class IngredientService extends IntentService {
                 this.getResources().getString(R.string.shared_preferences_name), MODE_PRIVATE);
         Uri uri = RecipeContract.RecipeIngredient.CONTENT_URI;
         Cursor cursor = null;
-        List<Ingredient> ingredients = null;
+        ArrayList<Ingredient> ingredients = null;
         String recipeName = null;
 
         if (sharedPreferences.contains(getString(R.string.key_recipe))) {

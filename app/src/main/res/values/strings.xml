@@ -7,11 +7,16 @@
     <string name="key_recipes" translatable="false">recipes</string>
     <string name="key_recipe_step_id" translatable="false">recipe-step-id</string>
     <string name="key_recipe_ingredients" translatable="false">recipe-ingredients</string>
-    <string name="appwidget_text">EXAMPLE</string>
+
     <string name="add_widget">Add widget</string>
     <string name="key_recipe_task_operation" translatable="false">recipe-task-operation</string>
 
     <string name="recipe_selection_start_label" translatable="true">Start Recipe</string>
     <string name="recipe_selection_continue_label" translatable="true">Continue Recipe</string>
     <string name="shared_preferences_name" translatable="false">Baking Preferences</string>
+
+    <string name="default_recipe_widget_text" translatable="true">Recipe</string>
+    <string name="default_ingreident_text" translatable="true">Ingredient</string>
+    <string name="default_measuring_text" translatable="true">Measurement</string>
+    <string name="default_quantity_text" translatable="true">Quantity</string>
 </resources>
