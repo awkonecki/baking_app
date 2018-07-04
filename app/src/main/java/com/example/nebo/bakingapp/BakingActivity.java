@@ -1,21 +1,31 @@
 package com.example.nebo.bakingapp;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.nebo.bakingapp.data.Ingredient;
 import com.example.nebo.bakingapp.data.Recipe;
+import com.example.nebo.bakingapp.data.RecipeContract;
 import com.example.nebo.bakingapp.databinding.ActivityBakingBinding;
+import com.example.nebo.bakingapp.task.RecipeTask;
 import com.example.nebo.bakingapp.ui.RecipesFragment;
 import com.example.nebo.bakingapp.util.NetworkUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import retrofit2.Call;
@@ -25,11 +35,13 @@ import retrofit2.Response;
 public class BakingActivity extends AppCompatActivity
         implements
         RecipesFragment.OnClickRecipeListener,
-        Callback<ArrayList<Recipe>>
+        Callback<ArrayList<Recipe>>,
+        LoaderManager.LoaderCallbacks<Cursor>
 {
-
+    private HashSet<String> mSupportedRecipes = new HashSet<String>();
     private ActivityBakingBinding mBinding = null;
-    // private IngredientDataBase mDb = null;
+    public static final int DB_QUERY_ALL_RECIPES = 100;
+    public static final int DB_INSERT_RECIPE_INGREDIENTS = 200;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,8 +57,21 @@ public class BakingActivity extends AppCompatActivity
 
         fragmentManager.beginTransaction().add(mBinding.flRecipes.getId(), recipesFragment).addToBackStack(null).commit();
 
-        // now need to provide some logic to actually get the recipes.
-        NetworkUtils.getRecipesFromNetwork(this);
+        // Perform a query & network fetch of data.
+        Bundle recipeTaskArgs = new Bundle();
+        recipeTaskArgs.putInt(getString(R.string.key_recipe_task_operation), DB_QUERY_ALL_RECIPES);
+
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<Cursor> loader = loaderManager.getLoader(DB_QUERY_ALL_RECIPES);
+
+        if (loader == null) {
+            loaderManager.initLoader(DB_QUERY_ALL_RECIPES, recipeTaskArgs, this).
+                    forceLoad();
+        }
+        else {
+            loaderManager.restartLoader(DB_QUERY_ALL_RECIPES, recipeTaskArgs, this).
+                    forceLoad();
+        }
     }
 
     @Override
@@ -61,13 +86,38 @@ public class BakingActivity extends AppCompatActivity
             recipesFragment.setArguments(fragmentArgs);
 
             fragmentManager.beginTransaction().replace(mBinding.flRecipes.getId(), recipesFragment).commit();
+
+            // Time to now insert the data into the database if the recipe does not already exist.
+            ContentResolver resolver = getContentResolver();
+            ArrayList<Recipe> recipeList = new ArrayList<>();
+
+            for (Recipe recipe : response.body()) {
+                if (!mSupportedRecipes.contains(recipe.getName())) {
+                    recipeList.add(recipe);
+                }
+            }
+
+            Bundle recipeTaskArgs = new Bundle();
+            recipeTaskArgs.putInt(
+                    getString(R.string.key_recipe_task_operation), DB_INSERT_RECIPE_INGREDIENTS);
+            recipeTaskArgs.putParcelableArrayList(getString(R.string.key_recipes), recipeList);
+
+            LoaderManager loaderManager = getSupportLoaderManager();
+            Loader<Cursor> loader = loaderManager.getLoader(DB_INSERT_RECIPE_INGREDIENTS);
+
+            if (loader == null) {
+                loaderManager.initLoader(DB_INSERT_RECIPE_INGREDIENTS, recipeTaskArgs, this).
+                        forceLoad();
+            }
+            else {
+                loaderManager.restartLoader(DB_INSERT_RECIPE_INGREDIENTS, recipeTaskArgs, this).
+                        forceLoad();
+            }
         }
     }
 
     @Override
-    public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
-
-    }
+    public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) { }
 
     @Override
     public void onClickRecipe(Recipe recipe) {
@@ -77,4 +127,48 @@ public class BakingActivity extends AppCompatActivity
 
         startActivity(intent);
     }
+
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        Loader<Cursor> loader = null;
+
+        switch (id) {
+            case DB_QUERY_ALL_RECIPES:
+            case DB_INSERT_RECIPE_INGREDIENTS:
+                loader = new RecipeTask(this, args);
+                break;
+            default:
+                throw new UnsupportedOperationException(
+                        "The provided id of " + Integer.toString(id) + " is not currently supported."
+                );
+        }
+
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        if (data != null) {
+            if (data.getCount() > 0) {
+                data.moveToFirst();
+
+                do {
+                    mSupportedRecipes.add(
+                            data.getString(
+                                    data.getColumnIndex(
+                                            RecipeContract.RecipeIngredient.COLUMN_RECIPE_NAME)));
+                } while (data.moveToNext());
+            }
+
+            // Clean-up the resource
+            data.close();
+
+            // Once closed the data can be fetched
+            NetworkUtils.getRecipesFromNetwork(this);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) { }
 }
