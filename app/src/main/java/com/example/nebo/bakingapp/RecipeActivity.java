@@ -1,11 +1,14 @@
 package com.example.nebo.bakingapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.example.nebo.bakingapp.data.Recipe;
 
@@ -16,7 +19,8 @@ import com.example.nebo.bakingapp.ui.RecipeStepsFragment;
 
 public class RecipeActivity extends AppCompatActivity
         implements RecipeStepsFragment.OnClickRecipeStepListener,
-        RecipeIngredientsSelectionFragment.OnClickIngredientsListener
+        RecipeIngredientsSelectionFragment.OnClickIngredientsListener,
+        View.OnClickListener
 {
     private Recipe mRecipe = null;
     private ActivityRecipeBinding mBinding = null;
@@ -55,6 +59,22 @@ public class RecipeActivity extends AppCompatActivity
             bundle.putParcelableArrayList(
                     getString(R.string.key_recipe_steps),
                     this.mRecipe.getSteps());
+        }
+
+        // Set the onclick listener to the RecipeActivity instance.
+        mBinding.btnStartContinue.setOnClickListener(this);
+
+        // Populate the text of the button to be either `Start Recipe` or `Continue Recipe` based
+        // on if shared preferences is set.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                getApplicationContext());
+
+        if (sharedPreferences.contains(getString(R.string.key_recipe)) && mRecipe != null) {
+            if (sharedPreferences.getString(getString(R.string.key_recipe), "").
+                    equals(mRecipe.getName()))
+            {
+                mBinding.btnStartContinue.setText(getString(R.string.recipe_selection_continue_label));
+            }
         }
 
         RecipeStepsFragment stepsFragment = new RecipeStepsFragment();
@@ -96,6 +116,38 @@ public class RecipeActivity extends AppCompatActivity
         intent.putExtra(getString(R.string.key_recipe), mRecipe);
         intent.putExtra(getString(R.string.key_recipe_step_id), -1);
         startActivity(intent);
+    }
+
+    // Launch the actual process of wanting to bake to the recipe.
+    private void startContinueBakingRecipe(int step) {
+        Intent intent = new Intent(this, RecipeDetailsActivity.class);
+        intent.putExtra(getString(R.string.key_recipe), mRecipe);
+        intent.putExtra(getString(R.string.key_recipe_step_id), step);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View v) {
+        // Method for starting or resuming a recipe.  Application will only support one at a time.
+        // No matter what the view will check the shared preferences to determine the last recipe
+        // and page navigated to.
+
+        // if the current recipe name is the same as the one stored, use the page to go straight to
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                getApplicationContext());
+
+        if (sharedPreferences.contains(getString(R.string.key_recipe)) && mRecipe != null) {
+            if (sharedPreferences.getString(getString(R.string.key_recipe), "").
+                    equals(mRecipe.getName()))
+            {
+                int recipeStep = -1;
+
+                recipeStep = sharedPreferences.getInt(
+                        getString(R.string.key_recipe_step_id), -1);
+
+                startContinueBakingRecipe(recipeStep);
+            }
+        }
     }
 
     /*

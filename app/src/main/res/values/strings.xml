@@ -10,4 +10,7 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="key_recipe_task_operation" translatable="false">recipe-task-operation</string>
+
+    <string name="recipe_selection_start_label" translatable="true">Start Recipe</string>
+    <string name="recipe_selection_continue_label" translatable="true">Continue Recipe</string>
 </resources>
