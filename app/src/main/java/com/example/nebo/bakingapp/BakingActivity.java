@@ -40,8 +40,8 @@ public class BakingActivity extends AppCompatActivity
 {
     private HashSet<String> mSupportedRecipes = new HashSet<String>();
     private ActivityBakingBinding mBinding = null;
-    private static final int DB_QUERY_ALL_RECIPES = 100;
-    private static final int DB_INSERT_RECIPE_INGREDIENTS = 200;
+    public static final int DB_QUERY_ALL_RECIPES = 100;
+    public static final int DB_INSERT_RECIPE_INGREDIENTS = 200;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,8 +57,21 @@ public class BakingActivity extends AppCompatActivity
 
         fragmentManager.beginTransaction().add(mBinding.flRecipes.getId(), recipesFragment).addToBackStack(null).commit();
 
-        // now need to provide some logic to actually get the recipes.
+        // Perform a query & network fetch of data.
+        Bundle recipeTaskArgs = new Bundle();
+        recipeTaskArgs.putInt(getString(R.string.key_recipe_task_operation), DB_QUERY_ALL_RECIPES);
 
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<Cursor> loader = loaderManager.getLoader(DB_QUERY_ALL_RECIPES);
+
+        if (loader == null) {
+            loaderManager.initLoader(DB_QUERY_ALL_RECIPES, recipeTaskArgs, this).
+                    forceLoad();
+        }
+        else {
+            loaderManager.restartLoader(DB_QUERY_ALL_RECIPES, recipeTaskArgs, this).
+                    forceLoad();
+        }
     }
 
     @Override
@@ -99,9 +112,7 @@ public class BakingActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
-
-    }
+    public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) { }
 
     @Override
     public void onClickRecipe(Recipe recipe) {
