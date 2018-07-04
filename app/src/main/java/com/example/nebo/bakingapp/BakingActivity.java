@@ -135,9 +135,8 @@ public class BakingActivity extends AppCompatActivity
 
         switch (id) {
             case DB_QUERY_ALL_RECIPES:
-                loader = new RecipeTask(this, args);
-                break;
             case DB_INSERT_RECIPE_INGREDIENTS:
+                loader = new RecipeTask(this, args);
                 break;
             default:
                 throw new UnsupportedOperationException(
