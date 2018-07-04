@@ -20,10 +20,12 @@ import com.example.nebo.bakingapp.data.Ingredient;
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.data.RecipeContract;
 import com.example.nebo.bakingapp.databinding.ActivityBakingBinding;
+import com.example.nebo.bakingapp.task.RecipeTask;
 import com.example.nebo.bakingapp.ui.RecipesFragment;
 import com.example.nebo.bakingapp.util.NetworkUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import retrofit2.Call;
@@ -36,9 +38,10 @@ public class BakingActivity extends AppCompatActivity
         Callback<ArrayList<Recipe>>,
         LoaderManager.LoaderCallbacks<Cursor>
 {
-
+    private HashSet<String> mSupportedRecipes = new HashSet<String>();
     private ActivityBakingBinding mBinding = null;
-    // private IngredientDataBase mDb = null;
+    private static final int DB_QUERY_ALL_RECIPES = 100;
+    private static final int DB_INSERT_RECIPE_INGREDIENTS = 200;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +58,7 @@ public class BakingActivity extends AppCompatActivity
         fragmentManager.beginTransaction().add(mBinding.flRecipes.getId(), recipesFragment).addToBackStack(null).commit();
 
         // now need to provide some logic to actually get the recipes.
-        NetworkUtils.getRecipesFromNetwork(this);
+
     }
 
     @Override
@@ -75,21 +78,21 @@ public class BakingActivity extends AppCompatActivity
             ContentResolver resolver = getContentResolver();
 
             for (Recipe recipe : response.body()) {
+                if (!mSupportedRecipes.contains(recipe.getName())) {
+                    for (Ingredient ingredient : recipe.getIngredients()) {
+                        // Construct the content values
+                        ContentValues values = new ContentValues();
+                        values.put(RecipeContract.RecipeIngredient.COLUMN_RECIPE_NAME,
+                                recipe.getName());
+                        values.put(RecipeContract.RecipeIngredient.COLUMN_INGREDIENT,
+                                ingredient.getIngredient());
+                        values.put(RecipeContract.RecipeIngredient.COLUMN_MEASURING,
+                                ingredient.getMeasure());
+                        values.put(RecipeContract.RecipeIngredient.COLUMN_QUANTITY,
+                                ingredient.getQuantity());
 
-
-                for (Ingredient ingredient : recipe.getIngredients()) {
-                    // Construct the content values
-                    ContentValues values = new ContentValues();
-                    values.put(RecipeContract.RecipeIngredient.COLUMN_RECIPE_NAME,
-                            recipe.getName());
-                    values.put(RecipeContract.RecipeIngredient.COLUMN_INGREDIENT,
-                            ingredient.getIngredient());
-                    values.put(RecipeContract.RecipeIngredient.COLUMN_MEASURING,
-                            ingredient.getMeasure());
-                    values.put(RecipeContract.RecipeIngredient.COLUMN_QUANTITY,
-                            ingredient.getQuantity());
-
-                    resolver.insert(RecipeContract.RecipeIngredient.CONTENT_URI, values);
+                        resolver.insert(RecipeContract.RecipeIngredient.CONTENT_URI, values);
+                    }
                 }
             }
         }
@@ -112,16 +115,45 @@ public class BakingActivity extends AppCompatActivity
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        return null;
+        Loader<Cursor> loader = null;
+
+        switch (id) {
+            case DB_QUERY_ALL_RECIPES:
+                loader = new RecipeTask(this, args);
+                break;
+            case DB_INSERT_RECIPE_INGREDIENTS:
+                break;
+            default:
+                throw new UnsupportedOperationException(
+                        "The provided id of " + Integer.toString(id) + " is not currently supported."
+                );
+        }
+
+        return loader;
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        if (data != null) {
+            if (data.getCount() > 0) {
+                data.moveToFirst();
 
+                do {
+                    mSupportedRecipes.add(
+                            data.getString(
+                                    data.getColumnIndex(
+                                            RecipeContract.RecipeIngredient.COLUMN_RECIPE_NAME)));
+                } while (data.moveToNext());
+            }
+
+            // Clean-up the resource
+            data.close();
+
+            // Once closed the data can be fetched
+            NetworkUtils.getRecipesFromNetwork(this);
+        }
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-
-    }
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) { }
 }
