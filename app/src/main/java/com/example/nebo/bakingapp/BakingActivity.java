@@ -89,24 +89,29 @@ public class BakingActivity extends AppCompatActivity
 
             // Time to now insert the data into the database if the recipe does not already exist.
             ContentResolver resolver = getContentResolver();
+            ArrayList<Recipe> recipeList = new ArrayList<>();
 
             for (Recipe recipe : response.body()) {
                 if (!mSupportedRecipes.contains(recipe.getName())) {
-                    for (Ingredient ingredient : recipe.getIngredients()) {
-                        // Construct the content values
-                        ContentValues values = new ContentValues();
-                        values.put(RecipeContract.RecipeIngredient.COLUMN_RECIPE_NAME,
-                                recipe.getName());
-                        values.put(RecipeContract.RecipeIngredient.COLUMN_INGREDIENT,
-                                ingredient.getIngredient());
-                        values.put(RecipeContract.RecipeIngredient.COLUMN_MEASURING,
-                                ingredient.getMeasure());
-                        values.put(RecipeContract.RecipeIngredient.COLUMN_QUANTITY,
-                                ingredient.getQuantity());
-
-                        resolver.insert(RecipeContract.RecipeIngredient.CONTENT_URI, values);
-                    }
+                    recipeList.add(recipe);
                 }
+            }
+
+            Bundle recipeTaskArgs = new Bundle();
+            recipeTaskArgs.putInt(
+                    getString(R.string.key_recipe_task_operation), DB_INSERT_RECIPE_INGREDIENTS);
+            recipeTaskArgs.putParcelableArrayList(getString(R.string.key_recipes), recipeList);
+
+            LoaderManager loaderManager = getSupportLoaderManager();
+            Loader<Cursor> loader = loaderManager.getLoader(DB_INSERT_RECIPE_INGREDIENTS);
+
+            if (loader == null) {
+                loaderManager.initLoader(DB_INSERT_RECIPE_INGREDIENTS, recipeTaskArgs, this).
+                        forceLoad();
+            }
+            else {
+                loaderManager.restartLoader(DB_INSERT_RECIPE_INGREDIENTS, recipeTaskArgs, this).
+                        forceLoad();
             }
         }
     }

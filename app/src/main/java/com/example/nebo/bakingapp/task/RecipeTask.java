@@ -10,7 +10,12 @@ import android.support.v4.content.AsyncTaskLoader;
 
 import com.example.nebo.bakingapp.BakingActivity;
 import com.example.nebo.bakingapp.R;
+import com.example.nebo.bakingapp.data.Ingredient;
+import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.data.RecipeContract;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecipeTask extends AsyncTaskLoader<Cursor> {
 
@@ -43,6 +48,35 @@ public class RecipeTask extends AsyncTaskLoader<Cursor> {
                             null,
                             null,
                             null);
+                    break;
+                case BakingActivity.DB_INSERT_RECIPE_INGREDIENTS:
+                    if (mArgs.containsKey(getContext().getResources().
+                            getString(R.string.key_recipes)))
+                    {
+                        ArrayList<Recipe> recipeList = mArgs.getParcelableArrayList(
+                                getContext().getResources().getString(R.string.key_recipes));
+
+                        if (recipeList == null) {
+                            break;
+                        }
+
+                        for (Recipe recipe : recipeList) {
+                            for (Ingredient ingredient : recipe.getIngredients()) {
+                                // Construct the content values
+                                ContentValues values = new ContentValues();
+                                values.put(RecipeContract.RecipeIngredient.COLUMN_RECIPE_NAME,
+                                        recipe.getName());
+                                values.put(RecipeContract.RecipeIngredient.COLUMN_INGREDIENT,
+                                        ingredient.getIngredient());
+                                values.put(RecipeContract.RecipeIngredient.COLUMN_MEASURING,
+                                        ingredient.getMeasure());
+                                values.put(RecipeContract.RecipeIngredient.COLUMN_QUANTITY,
+                                        ingredient.getQuantity());
+
+                                resolver.insert(RecipeContract.RecipeIngredient.CONTENT_URI, values);
+                            }
+                        }
+                    }
                     break;
                 default:
                     throw new UnsupportedOperationException(
