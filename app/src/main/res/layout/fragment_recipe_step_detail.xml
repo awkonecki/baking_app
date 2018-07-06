@@ -25,15 +25,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
-<!--
+
             <include
+                layout="@layout/include_recipe_step_video"
                 android:visibility="visible"
                 android:id="@+id/video"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="9"
+                android:layout_height="wrap_content"
                 />
-
+            <!--
             <include
                 android:visibility="visible"
                 android:id="@+id/thumbnail"

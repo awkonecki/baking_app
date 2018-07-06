@@ -3,6 +3,7 @@ package com.example.nebo.bakingapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -15,6 +16,13 @@ import com.example.nebo.bakingapp.ui.RecipeNavigationFragment;
 import com.example.nebo.bakingapp.ui.RecipeStepDetailFragment;
 
 import com.example.nebo.bakingapp.databinding.ActivityRecipeDetailsBinding;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 public class RecipeDetailsActivity extends AppCompatActivity
         implements RecipeNavigationFragment.NavigationOnClickListener {
