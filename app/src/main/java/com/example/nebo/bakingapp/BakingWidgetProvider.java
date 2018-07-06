@@ -40,8 +40,9 @@ public class BakingWidgetProvider extends AppWidgetProvider
                                 String recipeName,
                                 int appWidgetId)
     {
-        String widgetRecipeText = null;
+        String widgetRecipeText = "A Recipe";
 
+        /*
         if (recipeName == null || recipeName.isEmpty()) {
             widgetRecipeText =
                     context.getResources().getString(R.string.default_recipe_widget_text);
@@ -49,24 +50,27 @@ public class BakingWidgetProvider extends AppWidgetProvider
         else {
             widgetRecipeText = recipeName;
         }
+        */
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);
         views.setTextViewText(R.id.tv_widget_recipe_name, widgetRecipeText);
 
+        /*
         if (ingredientList != null) {
             Log.d("BakingWidgetProvider", Integer.toString(ingredientList.size()));
         }
         else {
             Log.d("BakingWidgetProvider", "ingredient list is null.");
         }
+        */
 
         Intent intent = new Intent(context, ListViewWidgetService.class);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        intent.putExtra(context.getResources().getString(R.string.key_recipe_ingredients),
-                ingredientList);
+        // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        //intent.putExtra(context.getResources().getString(R.string.key_recipe_ingredients),
+        //        ingredientList);
 
         views.setRemoteAdapter(R.id.lv_widget_ingredient_list, intent);
-        views.setEmptyView(R.id.lv_widget_ingredient_list, R.id.empty_view);
+        // views.setEmptyView(R.id.lv_widget_ingredient_list, R.id.empty_view);
 
         // CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
@@ -100,7 +104,10 @@ public class BakingWidgetProvider extends AppWidgetProvider
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // Intent service will be responsible for updating all the UI elements.
-        IngredientService.startActionListIngredients(context);
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, null, null, appWidgetId);
+        }
+        // IngredientService.startActionListIngredients(context);
     }
 
     @Override
