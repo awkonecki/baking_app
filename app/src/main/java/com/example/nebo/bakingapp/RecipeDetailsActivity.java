@@ -1,8 +1,10 @@
 package com.example.nebo.bakingapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -115,37 +117,53 @@ public class RecipeDetailsActivity extends AppCompatActivity
     @Override
     public void onNavigationClick(int direction) {
         mRecipeStep = mRecipeStep + direction;
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                getString(R.string.shared_preferences_name), MODE_PRIVATE);
 
-        if (mRecipeStep == -1) {
-            // need to display the ingrediants for the recipe.
-            RecipeIngredientsFragment recipeIngredientsFragment = new RecipeIngredientsFragment();
-            Bundle ingredientData = new Bundle();
-            ingredientData.putParcelableArrayList(
-                    getString(R.string.key_recipe_ingredients),
-                    mRecipe.getIngredients());
-            recipeIngredientsFragment.setArguments(ingredientData);
+        if (mRecipeStep < -1 || mRecipeStep >= mRecipe.getSteps().size()) {
+            // the step is outside of the scope of the recipe, thus the user might have completed
+            // the recipe or is not actually starting it so will clear the selected recipe.
+            sharedPreferences.edit().clear().apply();
 
-            getSupportFragmentManager().beginTransaction().
-                    replace(mBinding.flRecipeDetail.getId(), recipeIngredientsFragment).
-                    commit();
-
-            setTitle(mRecipe.getName() + " - " + getString(R.string.ingredients_label));
-        }
-        else if (mRecipeStep < -1 || mRecipeStep >= mRecipe.getSteps().size()) {
-            // the activity is done.  Go back to the RecipeActivity.
+            // No steps or ingredient specific fragment to display to the user.
             finish();
-        }
-        else {
-            RecipeStepDetailFragment recipeStepDetailFragment = new RecipeStepDetailFragment();
-            Bundle stepData = new Bundle();
-            stepData.putParcelable(getString(R.string.key_recipe_step), mRecipe.getStep(mRecipeStep));
-            recipeStepDetailFragment.setArguments(stepData);
+        } else {
+            sharedPreferences.edit().
+                    putInt(getString(R.string.key_recipe_step_id), mRecipeStep).
+                    apply();
 
-            getSupportFragmentManager().beginTransaction().
-                    replace(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
-                    commit();
+            String title = mRecipe.getName() + " - ";
 
-            setTitle(mRecipe.getName() + " - Step " + Integer.toString(mRecipeStep));
+            if (mRecipeStep == -1) {
+                title = title + "Ingredients";
+
+                // need to display the ingrediants for the recipe.
+                RecipeIngredientsFragment recipeIngredientsFragment =
+                        new RecipeIngredientsFragment();
+                Bundle ingredientData = new Bundle();
+                ingredientData.putParcelableArrayList(
+                        getString(R.string.key_recipe_ingredients),
+                        mRecipe.getIngredients());
+                recipeIngredientsFragment.setArguments(ingredientData);
+
+                getSupportFragmentManager().beginTransaction().
+                        replace(mBinding.flRecipeDetail.getId(), recipeIngredientsFragment).
+                        commit();
+            } else {
+                title = title + " Step " + Integer.toString(mRecipeStep);
+
+                RecipeStepDetailFragment recipeStepDetailFragment = new RecipeStepDetailFragment();
+                Bundle stepData = new Bundle();
+                stepData.putParcelable(getString(R.string.key_recipe_step),
+                        mRecipe.getStep(mRecipeStep));
+                recipeStepDetailFragment.setArguments(stepData);
+
+                getSupportFragmentManager().beginTransaction().
+                        replace(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
+                        commit();
+            }
+
+            setTitle(title);
         }
     }
 }

@@ -3,30 +3,82 @@
     android:id="@+id/ll_widget"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#09C"
+    android:background="#FFF"
     android:padding="@dimen/widget_margin"
     android:orientation="vertical">
 
-    <ImageView
-        android:src="@drawable/ic_cake_black_40dp"
-        android:layout_weight="2"
-        android:layout_gravity="top|center_vertical"
-        android:id="@+id/iv_widget"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_widget_recipe_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:textStyle="bold|italic" />
+    </FrameLayout>
 
-    <TextView
-        android:layout_weight="1"
-        android:id="@+id/tv_widget"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="4dp"
-        android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
-        android:textColor="#ffffff"
-        android:textSize="8sp"
-        android:textStyle="bold|italic" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false">
+
+        <RelativeLayout
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/default_ingreident_text"
+                android:id="@+id/tv_widget_ingredient_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="8dp"
+                android:textSize="12sp"
+                android:textStyle="bold|italic"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="@string/default_measuring_text"
+                android:id="@+id/tv_widget_measuring_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textSize="12sp"
+                android:textStyle="bold|italic"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="@string/default_quantity_text"
+                android:id="@+id/tv_widget_quantity_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:textSize="12sp"
+                android:textStyle="bold|italic"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ListView
+            android:id="@+id/lv_widget_ingredient_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </ListView>
+    </LinearLayout>
 
 </LinearLayout>
