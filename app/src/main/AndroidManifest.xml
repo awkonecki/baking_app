@@ -43,7 +43,6 @@
             android:name=".data.RecipeContentProvider"
             android:exported="false"/>
 
-        <service android:name=".service.IngredientService" />
         <service android:name=".service.ListViewWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
             android:exported="false"/>
