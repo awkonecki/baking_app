@@ -1,5 +1,7 @@
 package com.example.nebo.bakingapp;
 
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -24,22 +26,29 @@ public class BakingWidgetProvider extends AppWidgetProvider
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);
         views.setTextViewText(R.id.tv_widget_recipe_name, recipeName);
 
-        Intent intent = new Intent(context, ListViewWidgetService.class);
-
-        views.setRemoteAdapter(R.id.lv_widget_ingredient_list, intent);
-        // views.setEmptyView(R.id.lv_widget_ingredient_list, R.id.empty_view);
-
-        // CharSequence widgetText = context.getString(R.string.appwidget_text);
-        // Construct the RemoteViews object
-        // RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget);
-
-        // Intent intent = new Intent(context, BakingActivity.class);
-        // PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent onClickIntent = new Intent(context, BakingActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context,
+                0,
+                onClickIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         // setup support for click anywhere on the widget.
-        // views.setOnClickPendingIntent(R.id.ll_widget, pendingIntent);
+        views.setOnClickPendingIntent(R.id.ll_widget, pendingIntent);
 
-        // views.setTextViewText(R.id.appwidget_text, widgetText);
+        // Setup the list Details
+        Intent remoteAdapterIntent = new Intent(context, ListViewWidgetService.class);
+        views.setRemoteAdapter(R.id.lv_widget_ingredient_list, remoteAdapterIntent);
+
+        // Reference
+        // https://www.sitepoint.com/killer-way-to-show-a-list-of-items-in-android-collection-widget/
+        // for the click intent per list view item.
+        Intent clickIntentListView = new Intent(context, BakingActivity.class);
+        PendingIntent listViewItemPendingIntent = TaskStackBuilder.create(context).
+                addNextIntentWithParentStack(clickIntentListView).
+                getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // is only being applied to the non ListView.
+        views.setPendingIntentTemplate(R.id.lv_widget_ingredient_list, listViewItemPendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

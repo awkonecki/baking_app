@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.example.nebo.bakingapp.BakingWidgetProvider;
 import com.example.nebo.bakingapp.R;
 import com.example.nebo.bakingapp.data.RecipeContract;
 
@@ -87,6 +88,11 @@ public class ListViewFactory implements RemoteViewsService.RemoteViewsFactory {
         rv.setTextViewText(R.id.tv_widget_quantity,
                 Float.toString(mCursor.getFloat(mCursor.getColumnIndex(
                         RecipeContract.RecipeIngredient.COLUMN_QUANTITY))));
+
+        // Reference
+        // https://www.sitepoint.com/killer-way-to-show-a-list-of-items-in-android-collection-widget/
+        Intent intent = new Intent();
+        rv.setOnClickFillInIntent(R.id.ll_widget_item, intent);
 
         return rv;
     }
