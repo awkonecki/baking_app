@@ -47,7 +47,7 @@ public class ListViewFactory implements RemoteViewsService.RemoteViewsFactory {
             String[] selectionArgs = new String[]{recipeName};
 
             mCursor = mContext.getContentResolver().query(
-                    RecipeContract.RecipeIngredient.CONTENT_URI,
+                    uri,
                     null,
                     selection,
                     selectionArgs,

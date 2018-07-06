@@ -165,6 +165,7 @@ public class RecipeActivity extends AppCompatActivity
                     putString(getString(R.string.key_recipe), mRecipe.getName()).
                     putInt(getString(R.string.key_recipe_step_id), recipeStep).
                     apply();
+            BakingWidgetProvider.sendRefreshBoardcast(getApplicationContext());
         }
 
         startContinueBakingRecipe(recipeStep);
