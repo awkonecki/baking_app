@@ -3,7 +3,9 @@ package com.example.nebo.bakingapp.service;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Binder;
 import android.util.Log;
 import android.widget.AdapterView;
@@ -47,14 +49,28 @@ public class ListViewFactory implements RemoteViewsService.RemoteViewsFactory {
         }
 
         final long identityToken = Binder.clearCallingIdentity();
-        Log.d("ListViewFactory", "onDataSetChanged called.");
-        // mListIngredients = mListIngredients;
 
-        mCursor = mContext.getContentResolver().query(RecipeContract.RecipeIngredient.CONTENT_URI,
-                null,
-                null,
-                null,
-                null);
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(
+                mContext.getResources().getString(R.string.shared_preferences_name),
+                Context.MODE_PRIVATE);
+
+        Uri uri = RecipeContract.RecipeIngredient.CONTENT_URI;
+        String recipeName = null;
+
+        if (sharedPreferences.contains(mContext.getResources().getString(R.string.key_recipe))) {
+            recipeName = sharedPreferences.getString(
+                    mContext.getResources().getString(R.string.key_recipe), null);
+
+            String selection = RecipeContract.RecipeIngredient.COLUMN_RECIPE_NAME + "=?";
+            String[] selectionArgs = new String[]{recipeName};
+
+            mCursor = mContext.getContentResolver().query(
+                    RecipeContract.RecipeIngredient.CONTENT_URI,
+                    null,
+                    selection,
+                    selectionArgs,
+                    null);
+        }
 
         Binder.restoreCallingIdentity(identityToken);
     }
