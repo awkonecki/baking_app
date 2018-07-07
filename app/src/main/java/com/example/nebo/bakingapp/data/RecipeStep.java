@@ -20,6 +20,14 @@ public class RecipeStep implements Parcelable {
         }
     }
 
+    public String getThumbnailURL() {
+        return thumbnailURL;
+    }
+
+    public String getVideoURL() {
+        return videoURL;
+    }
+
     public int getId() {
         return this.id;
     }
