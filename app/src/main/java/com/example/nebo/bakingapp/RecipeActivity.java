@@ -136,8 +136,7 @@ public class RecipeActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    @Override
-    public void onClick(View v) {
+    private void handleClickEvent(int step) {
         // Method for starting or resuming a recipe.  Application will only support one at a time.
         // No matter what the view will check the shared preferences to determine the last recipe
         // and page navigated to.
@@ -169,6 +168,12 @@ public class RecipeActivity extends AppCompatActivity
         }
 
         startContinueBakingRecipe(recipeStep);
+    }
+
+    @Override
+    public void onClick(View v) {
+        // Click for handling the start / continue button.
+        handleClickEvent(-1);
     }
 
     @Override
