@@ -35,6 +35,14 @@ public class Recipe implements Parcelable{
         }
     }
 
+    public int getServings() {
+        return servings;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
     private Recipe(Parcel src) {
         if (src != null) {
             this.id = src.readInt();

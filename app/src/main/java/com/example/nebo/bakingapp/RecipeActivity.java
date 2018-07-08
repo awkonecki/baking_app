@@ -1,10 +1,10 @@
 package com.example.nebo.bakingapp;
 
+import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,9 +13,13 @@ import android.view.View;
 
 import com.example.nebo.bakingapp.data.Recipe;
 
+import com.example.nebo.bakingapp.data.RecipeContract;
 import com.example.nebo.bakingapp.data.RecipeStep;
 import com.example.nebo.bakingapp.databinding.ActivityRecipeBinding;
+import com.example.nebo.bakingapp.ui.RecipeIngredientsFragment;
 import com.example.nebo.bakingapp.ui.RecipeIngredientsSelectionFragment;
+import com.example.nebo.bakingapp.ui.RecipeNavigationFragment;
+import com.example.nebo.bakingapp.ui.RecipeStepDetailFragment;
 import com.example.nebo.bakingapp.ui.RecipeStepsFragment;
 
 public class RecipeActivity extends AppCompatActivity
@@ -63,36 +67,42 @@ public class RecipeActivity extends AppCompatActivity
                     this.mRecipe.getSteps());
         }
 
-        // Set the onclick listener to the RecipeActivity instance.
-        mBinding.btnStartContinue.setOnClickListener(this);
-
-        // Populate the text of the button to be either `Start Recipe` or `Continue Recipe` based
-        // on if shared preferences is set.
-        SharedPreferences sharedPreferences = getSharedPreferences(
-                getString(R.string.shared_preferences_name), MODE_PRIVATE);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-
-        if (sharedPreferences.contains(getString(R.string.key_recipe)) && mRecipe != null) {
-            if (sharedPreferences.getString(getString(R.string.key_recipe), "").
-                    equals(mRecipe.getName()))
-            {
-                mBinding.btnStartContinue.setText(getString(R.string.recipe_selection_continue_label));
-            }
+        if (getResources().getBoolean(R.bool.tablet)) {
+            // Tablet mode
+            mBinding.btnStartContinue.setVisibility(View.GONE);
         }
+        else {
+            // Phone mode
+            // Set the onclick listener to the RecipeActivity instance.
+            mBinding.btnStartContinue.setOnClickListener(this);
 
-        RecipeStepsFragment stepsFragment = new RecipeStepsFragment();
-        stepsFragment.setArguments(bundle);
+            // Populate the text of the button to be either `Start Recipe` or `Continue Recipe` based
+            // on if shared preferences is set.
+            SharedPreferences sharedPreferences = getSharedPreferences(
+                    getString(R.string.shared_preferences_name), MODE_PRIVATE);
+            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
-        // RecipeNavigationFragment navigationFragment = new RecipeNavigationFragment();
-        RecipeIngredientsSelectionFragment recipeIngredientFragment = new RecipeIngredientsSelectionFragment();
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+            if (sharedPreferences.contains(getString(R.string.key_recipe)) && mRecipe != null) {
+                if (sharedPreferences.getString(getString(R.string.key_recipe), "").
+                        equals(mRecipe.getName()))
+                {
+                    mBinding.btnStartContinue.setText(getString(R.string.recipe_selection_continue_label));
+                }
+            }
 
-        fragmentManager.beginTransaction().
-                add(R.id.fl_ingredients, recipeIngredientFragment).
-                add(R.id.fl_recipe_steps, stepsFragment).
-                // add(R.id.fl_navigation, navigationFragment).
-                commit();
+            RecipeStepsFragment stepsFragment = new RecipeStepsFragment();
+            stepsFragment.setArguments(bundle);
 
+            // RecipeNavigationFragment navigationFragment = new RecipeNavigationFragment();
+            RecipeIngredientsSelectionFragment recipeIngredientFragment = new RecipeIngredientsSelectionFragment();
+            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+
+            fragmentManager.beginTransaction().
+                    add(R.id.fl_ingredients, recipeIngredientFragment).
+                    add(R.id.fl_recipe_steps, stepsFragment).
+                    // add(R.id.fl_navigation, navigationFragment).
+                            commit();
+        }
     }
 
     @Override
@@ -114,18 +124,49 @@ public class RecipeActivity extends AppCompatActivity
 
     @Override
     public void onRecipeStepClick(RecipeStep recipeStep) {
-        Intent intent = new Intent(this, RecipeDetailsActivity.class);
-        intent.putExtra(getString(R.string.key_recipe), mRecipe);
-        intent.putExtra(getString(R.string.key_recipe_step_id), recipeStep.getId());
-        startActivity(intent);
+        if (!getResources().getBoolean(R.bool.tablet)) {
+            Intent intent = new Intent(this, RecipeDetailsActivity.class);
+            intent.putExtra(getString(R.string.key_recipe), mRecipe);
+            intent.putExtra(getString(R.string.key_recipe_step_id), recipeStep.getId());
+            startActivity(intent);
+        }
+        else {
+            // Click on the recipe step.
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            RecipeStepDetailFragment recipeStepDetailFragment = new RecipeStepDetailFragment();
+            Bundle stepData = new Bundle();
+            stepData.putParcelable(getString(R.string.key_recipe_step), recipeStep);
+            recipeStepDetailFragment.setArguments(stepData);
+
+            fragmentManager.beginTransaction().
+                    add(mBinding.flDetails.getId(), recipeStepDetailFragment).
+                    commit();
+        }
     }
 
     @Override
     public void onIngredientsClick() {
-        Intent intent = new Intent(this, RecipeDetailsActivity.class);
-        intent.putExtra(getString(R.string.key_recipe), mRecipe);
-        intent.putExtra(getString(R.string.key_recipe_step_id), -1);
-        startActivity(intent);
+        if (!getResources().getBoolean(R.bool.tablet)) {
+            Intent intent = new Intent(this, RecipeDetailsActivity.class);
+            intent.putExtra(getString(R.string.key_recipe), mRecipe);
+            intent.putExtra(getString(R.string.key_recipe_step_id), -1);
+            startActivity(intent);
+        }
+        else {
+            // Click on the recipe ingredients.
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            RecipeIngredientsFragment recipeIngredientDetailFragment = new RecipeIngredientsFragment();
+            Bundle stepData = new Bundle();
+            stepData.putParcelableArrayList(getString(R.string.key_recipe_ingredients),
+                    mRecipe.getIngredients());
+            recipeIngredientDetailFragment.setArguments(stepData);
+
+            fragmentManager.beginTransaction().
+                    add(mBinding.flDetails.getId(), recipeIngredientDetailFragment).
+                    commit();
+        }
     }
 
     // Launch the actual process of wanting to bake to the recipe.
