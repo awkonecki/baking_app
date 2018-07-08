@@ -1,5 +1,6 @@
 package com.example.nebo.bakingapp;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -67,20 +68,83 @@ public class RecipeActivity extends AppCompatActivity
                     this.mRecipe.getSteps());
         }
 
+        // Populate the text of the button to be either `Start Recipe` or `Continue Recipe` based
+        // on if shared preferences is set or for tablet mode select the detail.
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                getString(R.string.shared_preferences_name), MODE_PRIVATE);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
         if (getResources().getBoolean(R.bool.tablet)) {
             // Tablet mode
             mBinding.btnStartContinue.setVisibility(View.GONE);
+            String previousRecipe = sharedPreferences.getString(getString(R.string.key_recipe),
+                    null);
+            int recipeStep = -1;
+
+            // First pane - ingreident and steps list
+            RecipeIngredientsSelectionFragment recipeIngredientsSelectionFragment =
+                    new RecipeIngredientsSelectionFragment();
+
+            Bundle recipeStepsFragmentArgs = new Bundle();
+            if (mRecipe != null) {
+                recipeStepsFragmentArgs.putParcelableArrayList(getString(R.string.key_recipe_steps),
+                        mRecipe.getSteps());
+            }
+
+            RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
+            recipeStepsFragment.setArguments(recipeStepsFragmentArgs);
+
+            // Second pane - details
+            Fragment fragment = null;
+            Bundle fragmentArgs = new Bundle();
+
+            if (mRecipe != null && mRecipe.getName().equals(previousRecipe)) {
+                // Load the correct view
+                recipeStep = sharedPreferences.getInt(getString(R.string.key_recipe_step_id),
+                        -1);
+
+                if (recipeStep != -1) {
+                    // recipe step
+                    fragmentArgs.putParcelable(getString(R.string.key_recipe_step),
+                            mRecipe.getStep(recipeStep));
+                    RecipeStepDetailFragment recipeStepDetailFragment =
+                            new RecipeStepDetailFragment();
+                    recipeStepDetailFragment.setArguments(fragmentArgs);
+                    fragment = recipeStepsFragment;
+                }
+                else {
+                    // ingredient
+                    fragmentArgs.putParcelableArrayList(getString(R.string.key_recipe_ingredients),
+                            mRecipe.getIngredients());
+                    RecipeIngredientsFragment recipeIngredientsFragment =
+                            new RecipeIngredientsFragment();
+                    recipeIngredientsFragment.setArguments(fragmentArgs);
+                    fragment = recipeIngredientsFragment;
+                }
+            }
+            else if (mRecipe != null){
+                // ingredient
+                fragmentArgs.putParcelableArrayList(getString(R.string.key_recipe_ingredients),
+                        mRecipe.getIngredients());
+                RecipeIngredientsFragment recipeIngredientsFragment =
+                        new RecipeIngredientsFragment();
+                recipeIngredientsFragment.setArguments(fragmentArgs);
+                fragment = recipeIngredientsFragment;
+            }
+
+            // Commit for the transaction.
+            fragmentManager.beginTransaction().
+                    add(mBinding.flIngredients.getId(), recipeIngredientsSelectionFragment).
+                    add(mBinding.flRecipeSteps.getId(), recipeStepsFragment).
+                    add(mBinding.flDetails.getId(), fragment).
+                    commit();
         }
         else {
             // Phone mode
             // Set the onclick listener to the RecipeActivity instance.
             mBinding.btnStartContinue.setOnClickListener(this);
-
-            // Populate the text of the button to be either `Start Recipe` or `Continue Recipe` based
-            // on if shared preferences is set.
-            SharedPreferences sharedPreferences = getSharedPreferences(
-                    getString(R.string.shared_preferences_name), MODE_PRIVATE);
-            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
             if (sharedPreferences.contains(getString(R.string.key_recipe)) && mRecipe != null) {
                 if (sharedPreferences.getString(getString(R.string.key_recipe), "").
@@ -95,13 +159,11 @@ public class RecipeActivity extends AppCompatActivity
 
             // RecipeNavigationFragment navigationFragment = new RecipeNavigationFragment();
             RecipeIngredientsSelectionFragment recipeIngredientFragment = new RecipeIngredientsSelectionFragment();
-            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 
             fragmentManager.beginTransaction().
                     add(R.id.fl_ingredients, recipeIngredientFragment).
                     add(R.id.fl_recipe_steps, stepsFragment).
-                    // add(R.id.fl_navigation, navigationFragment).
-                            commit();
+                    commit();
         }
     }
 
