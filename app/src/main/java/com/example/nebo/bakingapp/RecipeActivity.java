@@ -90,8 +90,12 @@ public class RecipeActivity extends AppCompatActivity
             if (mRecipe != null) {
                 recipeStepsFragmentArgs.putParcelableArrayList(getString(R.string.key_recipe_steps),
                         mRecipe.getSteps());
-                sharedPreferences.edit().putString(getString(R.string.key_recipe),
-                        mRecipe.getName()).apply();
+                if (previousRecipe != null && !previousRecipe.equals(mRecipe.getName())) {
+                    sharedPreferences.edit().
+                            putString(getString(R.string.key_recipe), mRecipe.getName()).
+                            putInt(getString(R.string.key_recipe_step_id), -1).
+                            apply();
+                }
                 BakingWidgetProvider.sendRefreshBoardcast(getApplicationContext());
             }
 
