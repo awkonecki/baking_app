@@ -19,4 +19,6 @@
     <string name="default_ingreident_text" translatable="true">Ingredient</string>
     <string name="default_measuring_text" translatable="true">Measurement</string>
     <string name="default_quantity_text" translatable="true">Quantity</string>
+
+    <string name="recipe_image_description" translatable="true">Image of the recipe.</string>
 </resources>
