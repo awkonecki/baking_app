@@ -98,8 +98,21 @@ public class RecipeActivity extends AppCompatActivity
             RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
             recipeStepsFragment.setArguments(recipeStepsFragmentArgs);
 
+            // Commit for the transaction.
+            if (savedInstanceState == null) {
+                fragmentManager.beginTransaction().
+                        add(mBinding.flIngredients.getId(), recipeIngredientsSelectionFragment).
+                        add(mBinding.flRecipeSteps.getId(), recipeStepsFragment).
+                        commit();
+            }
+            else {
+                fragmentManager.beginTransaction().
+                        replace(mBinding.flIngredients.getId(), recipeIngredientsSelectionFragment).
+                        replace(mBinding.flRecipeSteps.getId(), recipeStepsFragment).
+                        commit();
+            }
+
             // Second pane - details
-            Fragment fragment = null;
             Bundle fragmentArgs = new Bundle();
 
             if (mRecipe != null && mRecipe.getName().equals(previousRecipe)) {
@@ -114,7 +127,9 @@ public class RecipeActivity extends AppCompatActivity
                     RecipeStepDetailFragment recipeStepDetailFragment =
                             new RecipeStepDetailFragment();
                     recipeStepDetailFragment.setArguments(fragmentArgs);
-                    fragment = recipeStepsFragment;
+                    fragmentManager.beginTransaction().
+                            add(mBinding.flDetails.getId(), recipeStepDetailFragment).
+                            commit();
                 }
                 else {
                     // ingredient
@@ -123,7 +138,9 @@ public class RecipeActivity extends AppCompatActivity
                     RecipeIngredientsFragment recipeIngredientsFragment =
                             new RecipeIngredientsFragment();
                     recipeIngredientsFragment.setArguments(fragmentArgs);
-                    fragment = recipeIngredientsFragment;
+                    fragmentManager.beginTransaction().
+                            add(mBinding.flDetails.getId(), recipeIngredientsFragment).
+                            commit();
                 }
             }
             else if (mRecipe != null){
@@ -133,22 +150,8 @@ public class RecipeActivity extends AppCompatActivity
                 RecipeIngredientsFragment recipeIngredientsFragment =
                         new RecipeIngredientsFragment();
                 recipeIngredientsFragment.setArguments(fragmentArgs);
-                fragment = recipeIngredientsFragment;
-            }
-
-            // Commit for the transaction.
-            if (savedInstanceState == null) {
                 fragmentManager.beginTransaction().
-                        add(mBinding.flIngredients.getId(), recipeIngredientsSelectionFragment).
-                        add(mBinding.flRecipeSteps.getId(), recipeStepsFragment).
-                        // add(mBinding.flDetails.getId(), fragment).
-                        commit();
-            }
-            else {
-                fragmentManager.beginTransaction().
-                        replace(mBinding.flIngredients.getId(), recipeIngredientsSelectionFragment).
-                        replace(mBinding.flRecipeSteps.getId(), recipeStepsFragment).
-                        //replace(mBinding.flDetails.getId(), fragment).
+                        add(mBinding.flDetails.getId(), recipeIngredientsFragment).
                         commit();
             }
         }
