@@ -36,12 +36,13 @@ public class RecipeActivity extends AppCompatActivity
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe);
+        mRecipe = null;
 
         if (savedInstanceState != null && savedInstanceState.containsKey(getString(R.string.key_recipe))) {
             mRecipe = savedInstanceState.getParcelable(getString(R.string.key_recipe));
         }
-        else if (savedInstanceState == null) {
-            Log.d("RecipeActivity", "savedInstanceState is null.");
+        else if (getIntent() != null && getIntent().hasExtra(getString(R.string.key_recipe))) {
+            mRecipe = getIntent().getParcelableExtra(getString(R.string.key_recipe));
         }
 
         Log.d("RecipeActivity", "OnCreate is called " + (mRecipe == null ? "recipe is null" : mRecipe.getName()));
@@ -53,13 +54,6 @@ public class RecipeActivity extends AppCompatActivity
         }
 
         Bundle bundle = new Bundle();
-
-        // Determine if the activity is started from another, thus try to parse the activity desired
-        // extras.
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra(getString(R.string.key_recipe))) {
-            this.mRecipe = intent.getParcelableExtra(getString(R.string.key_recipe));
-        }
 
         if (this.mRecipe != null) {
             setTitle(this.mRecipe.getName());
@@ -76,6 +70,12 @@ public class RecipeActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
+        if (mRecipe != null) {
+            Log.d("RecipeActivity", "Recipe name " + mRecipe.getName() + " Recipe step count " + Integer.toString(mRecipe.getSteps().size()));
+        }
+
+        Log.d("RecipeActivity", Boolean.toString(savedInstanceState == null) + " " + Boolean.toString(getIntent() == null));
+
         if (getResources().getBoolean(R.bool.tablet)) {
             // Tablet mode
             String previousRecipe = sharedPreferences.getString(getString(R.string.key_recipe),
@@ -90,6 +90,9 @@ public class RecipeActivity extends AppCompatActivity
             if (mRecipe != null) {
                 recipeStepsFragmentArgs.putParcelableArrayList(getString(R.string.key_recipe_steps),
                         mRecipe.getSteps());
+                sharedPreferences.edit().putString(getString(R.string.key_recipe),
+                        mRecipe.getName()).apply();
+                BakingWidgetProvider.sendRefreshBoardcast(getApplicationContext());
             }
 
             RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
@@ -134,11 +137,20 @@ public class RecipeActivity extends AppCompatActivity
             }
 
             // Commit for the transaction.
-            fragmentManager.beginTransaction().
-                    add(mBinding.flIngredients.getId(), recipeIngredientsSelectionFragment).
-                    add(mBinding.flRecipeSteps.getId(), recipeStepsFragment).
-                    add(mBinding.flDetails.getId(), fragment).
-                    commit();
+            if (savedInstanceState == null) {
+                fragmentManager.beginTransaction().
+                        add(mBinding.flIngredients.getId(), recipeIngredientsSelectionFragment).
+                        add(mBinding.flRecipeSteps.getId(), recipeStepsFragment).
+                        // add(mBinding.flDetails.getId(), fragment).
+                        commit();
+            }
+            else {
+                fragmentManager.beginTransaction().
+                        replace(mBinding.flIngredients.getId(), recipeIngredientsSelectionFragment).
+                        replace(mBinding.flRecipeSteps.getId(), recipeStepsFragment).
+                        //replace(mBinding.flDetails.getId(), fragment).
+                        commit();
+            }
         }
         else {
             // Phone mode
@@ -156,14 +168,23 @@ public class RecipeActivity extends AppCompatActivity
             RecipeStepsFragment stepsFragment = new RecipeStepsFragment();
             stepsFragment.setArguments(bundle);
 
-            // RecipeNavigationFragment navigationFragment = new RecipeNavigationFragment();
             RecipeIngredientsSelectionFragment recipeIngredientFragment = new RecipeIngredientsSelectionFragment();
+            if (savedInstanceState == null) {
+                fragmentManager.beginTransaction().
+                        add(R.id.fl_ingredients, recipeIngredientFragment).
+                        add(R.id.fl_recipe_steps, stepsFragment).
+                        commit();
+            }
+            else {
+                fragmentManager.beginTransaction().
+                        replace(R.id.fl_ingredients, recipeIngredientFragment).
+                        replace(R.id.fl_recipe_steps, stepsFragment).
+                        commit();
+            }
 
-            fragmentManager.beginTransaction().
-                    add(R.id.fl_ingredients, recipeIngredientFragment).
-                    add(R.id.fl_recipe_steps, stepsFragment).
-                    commit();
         }
+
+        fragmentManager.executePendingTransactions();
     }
 
     @Override
@@ -179,7 +200,6 @@ public class RecipeActivity extends AppCompatActivity
 
         if (mRecipe != null) {
             outState.putParcelable(getString(R.string.key_recipe), mRecipe);
-            Log.d("onSavedInstanceState", "saved " + mRecipe.getName());
         }
     }
 
@@ -203,6 +223,13 @@ public class RecipeActivity extends AppCompatActivity
             fragmentManager.beginTransaction().
                     replace(mBinding.flDetails.getId(), recipeStepDetailFragment).
                     commit();
+
+            // Save the step in shared preferences
+            SharedPreferences sharedPreferences = getSharedPreferences(
+                    getString(R.string.shared_preferences_name), MODE_PRIVATE);
+
+            sharedPreferences.edit().putInt(getString(R.string.key_recipe_step_id),
+                    recipeStep.getId()).apply();
         }
     }
 
@@ -227,6 +254,12 @@ public class RecipeActivity extends AppCompatActivity
             fragmentManager.beginTransaction().
                     replace(mBinding.flDetails.getId(), recipeIngredientDetailFragment).
                     commit();
+
+            // Save the step in shared preferences
+            SharedPreferences sharedPreferences = getSharedPreferences(
+                    getString(R.string.shared_preferences_name), MODE_PRIVATE);
+
+            sharedPreferences.edit().putInt(getString(R.string.key_recipe_step_id), -1).apply();
         }
     }
 
@@ -280,7 +313,12 @@ public class RecipeActivity extends AppCompatActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key != null && !key.isEmpty()) {
+        if (key != null &&
+                !key.isEmpty() &&
+                !getResources().getBoolean(R.bool.tablet) &&
+                mBinding != null &&
+                mBinding.btnStartContinue != null)
+        {
             mBinding.btnStartContinue.setText(getString(R.string.recipe_selection_continue_label));
         }
     }

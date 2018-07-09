@@ -69,7 +69,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
         if (mRecipeStep != -1 && mRecipe != null) {
             setTitle(mRecipe.getName() + " - Step " + Integer.toString(mRecipeStep));
         }
-        else {
+        else if (mRecipe != null) {
             setTitle(mRecipe.getName() + " - " + getString(R.string.ingredients_label));
         }
 
