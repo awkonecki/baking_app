@@ -202,7 +202,7 @@ public class RecipeActivity extends AppCompatActivity
             recipeStepDetailFragment.setArguments(stepData);
 
             fragmentManager.beginTransaction().
-                    add(mBinding.flDetails.getId(), recipeStepDetailFragment).
+                    replace(mBinding.flDetails.getId(), recipeStepDetailFragment).
                     commit();
         }
     }
@@ -226,7 +226,7 @@ public class RecipeActivity extends AppCompatActivity
             recipeIngredientDetailFragment.setArguments(stepData);
 
             fragmentManager.beginTransaction().
-                    add(mBinding.flDetails.getId(), recipeIngredientDetailFragment).
+                    replace(mBinding.flDetails.getId(), recipeIngredientDetailFragment).
                     commit();
         }
     }
