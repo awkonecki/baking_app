@@ -78,7 +78,6 @@ public class RecipeActivity extends AppCompatActivity
 
         if (getResources().getBoolean(R.bool.tablet)) {
             // Tablet mode
-            mBinding.btnStartContinue.setVisibility(View.GONE);
             String previousRecipe = sharedPreferences.getString(getString(R.string.key_recipe),
                     null);
             int recipeStep = -1;
