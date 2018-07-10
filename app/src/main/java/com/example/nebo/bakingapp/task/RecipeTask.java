@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.example.nebo.bakingapp.BakingActivity;
+import com.example.nebo.bakingapp.IdlingResource.NetworkIdlingResource;
 import com.example.nebo.bakingapp.R;
 import com.example.nebo.bakingapp.data.Ingredient;
 import com.example.nebo.bakingapp.data.Recipe;
@@ -20,15 +21,23 @@ import java.util.List;
 public class RecipeTask extends AsyncTaskLoader<Cursor> {
 
     private final Bundle mArgs;
+    private NetworkIdlingResource mIdlingResource;
 
-    public RecipeTask(Context context, @Nullable Bundle args) {
+    public RecipeTask(Context context,
+                      @Nullable Bundle args,
+                      @Nullable NetworkIdlingResource resource) {
         super(context);
         this.mArgs = args;
+        this.mIdlingResource = resource;
     }
 
     @Nullable
     @Override
     public Cursor loadInBackground() {
+        if (mIdlingResource != null) {
+            mIdlingResource.setmIsIdle(false);
+        }
+
         Cursor cursor = null;
         ContentResolver resolver = getContext().getContentResolver();
 

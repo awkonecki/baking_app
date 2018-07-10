@@ -9,6 +9,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.viewholder.RecipeViewHolder;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,33 +25,35 @@ import static org.hamcrest.CoreMatchers.not;
 
 @RunWith(AndroidJUnit4.class)
 public class BakingActivityTest {
-     @Rule public ActivityTestRule<BakingActivity> mActivityTestRule =
+    @Rule public ActivityTestRule<BakingActivity> mActivityTestRule =
             new ActivityTestRule<BakingActivity>(BakingActivity.class);
 
-     private IdlingResource mIdlingResource;
+    private IdlingResource mIdlingResource;
 
-     @Before
-     public void registerIdlingResource() {
-         // mIdlingResource = mActivityTestRule.getActivity().getIdlingResource();
-         Espresso.registerIdlingResources(mIdlingResource);
-     }
+    @Before
+    public void registerIdlingResource() {
+        mIdlingResource = mActivityTestRule.getActivity().getIdlingDBResource();
+        Espresso.registerIdlingResources(mIdlingResource);
+    }
 
-     @Test
-     public void hasRecipeBrownie() {
-         // Something about a footer not being displayed first, dont know what that is.
+    @Test
+    public void hasRecipeBrownie() {
+        // Something about a footer not being displayed first, dont know what that is.
 
-         // check to see if the recycler view is already displayed.
-        onView(withId(R.id.fl_ingredients)).check(matches(not(isDisplayed())));
 
-        onView(withId(R.id.fl_recipes)).perform(RecyclerViewActions.<RecipeViewHolder<Recipe>>actionOnItemAtPosition(2, click()));
+        // check to see if the recycler view is already displayed.
+        onView(withId(R.id.fl_recipes)).check(matches(isDisplayed()));
 
-        onView(withId(R.id.fl_ingredients)).check(matches((isDisplayed())));
-     }
+        // onView(withId(R.id.fl_recipes)).+
+        // onView(withId(R.id.fl_recipes)).perform(RecyclerViewActions.<RecipeViewHolder<Recipe>>actionOnItemAtPosition(2, click()));
 
-     @Test
-     public void hasRecipeNutellaPie() {
+        // onView(withId(R.id.fl_ingredients)).check(matches((isDisplayed())));
+    }
 
-     }
+    @Test
+    public void hasRecipeNutellaPie() {
+
+    }
 
     @Test
     public void clickRecipeRecyclerViewListItem() {
@@ -62,21 +65,10 @@ public class BakingActivityTest {
         assert (true);
     }
 
-    public class NetworkIdlingResource implements IdlingResource {
-
-        @Override
-        public String getName() {
-            return null;
-        }
-
-        @Override
-        public boolean isIdleNow() {
-            return false;
-        }
-
-        @Override
-        public void registerIdleTransitionCallback(ResourceCallback callback) {
-
+    @After
+    public void unregisterIdlingResource() {
+        if (mIdlingResource != null) {
+            Espresso.unregisterIdlingResources(mIdlingResource);
         }
     }
 }

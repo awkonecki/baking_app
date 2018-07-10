@@ -10,12 +10,15 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.nebo.bakingapp.IdlingResource.NetworkIdlingResource;
 import com.example.nebo.bakingapp.data.Ingredient;
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.data.RecipeContract;
@@ -43,7 +46,30 @@ public class BakingActivity extends AppCompatActivity
     public static final int DB_QUERY_ALL_RECIPES = 100;
     public static final int DB_INSERT_RECIPE_INGREDIENTS = 200;
 
+    @Nullable
+    private NetworkIdlingResource mIdlingDBResource;
+    @Nullable
+    private NetworkIdlingResource mIdlingNetworkResource;
 
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingNetworkResource() {
+        if (mIdlingNetworkResource == null) {
+            mIdlingNetworkResource = new NetworkIdlingResource();
+        }
+
+        return mIdlingNetworkResource;
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingDBResource() {
+        if (mIdlingDBResource == null) {
+            mIdlingDBResource = new NetworkIdlingResource();
+        }
+
+        return mIdlingDBResource;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,6 +88,10 @@ public class BakingActivity extends AppCompatActivity
         // Perform a query & network fetch of data.
         Bundle recipeTaskArgs = new Bundle();
         recipeTaskArgs.putInt(getString(R.string.key_recipe_task_operation), DB_QUERY_ALL_RECIPES);
+
+        // Really should be done with dependency injection but I am just not there yet.
+        getIdlingNetworkResource();
+        getIdlingDBResource();
 
         LoaderManager loaderManager = getSupportLoaderManager();
         Loader<Cursor> loader = loaderManager.getLoader(DB_QUERY_ALL_RECIPES);
@@ -116,6 +146,7 @@ public class BakingActivity extends AppCompatActivity
                         forceLoad();
             }
         }
+
     }
 
     @Override
@@ -138,7 +169,7 @@ public class BakingActivity extends AppCompatActivity
         switch (id) {
             case DB_QUERY_ALL_RECIPES:
             case DB_INSERT_RECIPE_INGREDIENTS:
-                loader = new RecipeTask(this, args);
+                loader = new RecipeTask(this, args, mIdlingDBResource);
                 break;
             default:
                 throw new UnsupportedOperationException(
@@ -168,6 +199,12 @@ public class BakingActivity extends AppCompatActivity
 
             // Once closed the data can be fetched
             NetworkUtils.getRecipesFromNetwork(this);
+        }
+        else {
+            if (mIdlingDBResource != null) {
+                // Insert operation ends up here.
+                mIdlingDBResource.setmIsIdle(true);
+            }
         }
     }
 
