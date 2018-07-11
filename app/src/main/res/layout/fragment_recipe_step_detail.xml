@@ -29,6 +29,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_video"
                 android:orientation="vertical"
                 android:layout_weight="7"
                 android:layout_width="match_parent"
@@ -49,6 +50,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_thumbnail"
                 android:orientation="vertical"
                 android:layout_weight="7"
                 android:layout_width="match_parent"
