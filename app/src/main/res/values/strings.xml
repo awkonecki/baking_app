@@ -22,6 +22,10 @@
 
     <string name="recipe_image_description" translatable="true">Image of the recipe.</string>
 
+    <string name="recipe_detail_step_description_label" translatable="true">Step Description</string>
+    <string name="recipe_detail_step_video_label" translatable="true">Step Video</string>
+    <string name="recipe_detail_step_thumbnail_label" translatable="true">Step Thumbnail</string>
+
     <string name="recipe_one" translatable="false">Nutella Pie</string>
     <string name="recipe_two" translatable="false">Brownies</string>
     <string name="recipe_three" translatable="false">Yellow Cake</string>
