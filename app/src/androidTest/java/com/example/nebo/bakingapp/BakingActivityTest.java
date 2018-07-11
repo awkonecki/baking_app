@@ -9,11 +9,15 @@ import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.nebo.bakingapp.data.Recipe;
 import com.example.nebo.bakingapp.viewholder.RecipeViewHolder;
@@ -29,11 +33,15 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.not;
@@ -52,58 +60,71 @@ public class BakingActivityTest {
     }
 
     @Test
-    public void hasRecipes() {
-        // RecipeActivity should now be viewable.
+    public void fragmentExists() {
+        // RecipeActivity should not now be viewable.
         onView(withId(R.id.ll_recipe)).check(doesNotExist());
 
-        // check to see if the frame layout that is supposed to contain the recycler view is already displayed.
+        // check to see if the frame layout that is supposed to contain the recycler view is already
+        // displayed.
         onView(withId(R.id.fl_recipes)).check(matches(isDisplayed()));
 
+        // check to see if the recycler view widget exists.
+        onView(withId(R.id.rv_recipes)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void hasRecipes() {
         // Make sure that each recipe is in the correct position.
         for (int position = 0; position < 4; position++) {
-            String recipeName = null;
-            int id = 0;
-
-            switch(position) {
-                case 0:
-                    id = R.string.recipe_one;
-                    break;
-                case 1:
-                    id = R.string.recipe_two;
-                    break;
-                case 2:
-                    id = R.string.recipe_three;
-                    break;
-                case 3:
-                    id = R.string.recipe_four;
-                    break;
-            }
-
-            recipeName = InstrumentationRegistry.getTargetContext().getResources().getString(id);
-
             for (int subposition = 0; subposition < 4; subposition++) {
-
 
                 if (subposition == position) {
                     // Positive case for existence.
-                    onView(atPositionOnView(subposition, -1, R.id.rv_recipes)).check(matches(hasDescendant(withText(recipeName))));
+                    onView(atPositionOnView(subposition, -1, R.id.rv_recipes)).
+                            check(matches(hasDescendant(withText(getRecipeNameAtPosition(position)))));
                 }
                 else {
                     // Negative case for not equal
-                    onView(atPositionOnView(subposition, -1, R.id.rv_recipes)).check(matches(not(hasDescendant(withText(recipeName)))));
+                    onView(atPositionOnView(subposition, -1, R.id.rv_recipes)).
+                            check(matches(not(hasDescendant(withText(getRecipeNameAtPosition(position))))));
                 }
             }
         }
     }
 
+    // Go through and click each recipe in the recipe recycler view and then make sure the proper
+    // recipe is displayed in the title.
     @Test
     public void clickRecipeRecyclerViewListItem() {
-        // find the view
-        onView(withId(R.id.rv_recipes)).check(matches(withText("hello")));
+        for (int position = 0; position < 4; position++) {
+            // find the view and click position 0 of the recycler view
+            onView(withId(R.id.rv_recipes)).
+                    perform(RecyclerViewActions.<RecipeViewHolder<Recipe>>scrollToPosition(position)).
+                    perform(RecyclerViewActions.<RecipeViewHolder<Recipe>>actionOnItemAtPosition(position, click()));
 
-        // perform the action on the view
-        // check if the view does what you expect
-        assert (true);
+            // RecipeActivity should now be viewable.
+            onView(withId(R.id.ll_recipe)).check(matches(isDisplayed()));
+
+            // Make sure that the title is populated correctly.
+            onView(allOf(isAssignableFrom(TextView.class), withParent(isAssignableFrom(Toolbar.class)))).
+                    check(matches(withText(getRecipeNameAtPosition(position))));
+
+            // Make sure that the up button exists and press back.
+            onView(allOf(isAssignableFrom(ImageButton.class),
+                    withParent(isAssignableFrom(Toolbar.class)),
+                    withContentDescription(R.string.navitgate_up_button_description))).
+                    check(matches(isDisplayed())).
+                    perform(pressBack());
+
+            onView(withId(R.id.ll_recipe)).check(doesNotExist());
+
+            // check to see if the frame layout that is supposed to contain the recycler view is already
+            // displayed.
+            onView(withId(R.id.fl_recipes)).check(matches(isDisplayed()));
+
+            // check to see if the recycler view widget exists.
+            onView(withId(R.id.rv_recipes)).check(matches(isDisplayed()));
+        }
     }
 
     @After
@@ -113,7 +134,31 @@ public class BakingActivityTest {
         }
     }
 
+    private static String getRecipeNameAtPosition(int position) {
+        String recipeName = null;
+        int id = 0;
 
+        switch(position) {
+            case 0:
+                id = R.string.recipe_one;
+                break;
+            case 1:
+                id = R.string.recipe_two;
+                break;
+            case 2:
+                id = R.string.recipe_three;
+                break;
+            case 3:
+                id = R.string.recipe_four;
+                break;
+        }
+
+        recipeName = InstrumentationRegistry.getTargetContext().getResources().getString(id);
+
+        return recipeName;
+    }
+
+    // Reference github RecyclerView Matcher on github @charbgr
     private static Matcher<View> atPositionOnView(final int position, final int targetViewId, final int recyclerViewId) {
         return new TypeSafeMatcher<View>() {
             Resources resources = null;
@@ -149,30 +194,6 @@ public class BakingActivityTest {
             @Override
             public void describeTo(Description description) {
 
-            }
-        };
-    }
-
-    // stackoverflow.com/questions/31394569/how-to-assert-inside-a-recyclerview-in-espresso
-    @NonNull
-    private static Matcher<View> atRecyclerPosition(@NonNull final Matcher<View> itemMatcher, final int position) {
-        return new BoundedMatcher<View, RecyclerView>(RecyclerView.class) {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("item at position " + Integer.toString(position) + " is ");
-                itemMatcher.describeTo(description);
-            }
-
-            @Override
-            protected boolean matchesSafely(RecyclerView item) {
-                RecyclerView.ViewHolder viewHolder = item.findViewHolderForAdapterPosition(position);
-
-                if (viewHolder != null) {
-                    return false;
-                }
-                else {
-                    return itemMatcher.matches(viewHolder.itemView);
-                }
             }
         };
     }

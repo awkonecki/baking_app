@@ -26,4 +26,5 @@
     <string name="recipe_two" translatable="false">Brownies</string>
     <string name="recipe_three" translatable="false">Yellow Cake</string>
     <string name="recipe_four" translatable="false">Cheesecake</string>
+    <string name="navitgate_up_button_description" translatable="false">Navigate up</string>
 </resources>
