@@ -55,7 +55,6 @@ public class AppAdapter <D, VH extends AppViewHolder<D>> extends RecyclerView.Ad
 
     public void setData(List<D> data) {
         if (data != null) {
-            Log.d ("AppAdapter", "Updating the Adapter Data Set with " + Integer.toString(data.size()));
             this.mData = data;
             notifyDataSetChanged();
         }

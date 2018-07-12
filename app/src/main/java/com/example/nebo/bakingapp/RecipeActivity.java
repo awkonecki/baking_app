@@ -45,9 +45,6 @@ public class RecipeActivity extends AppCompatActivity
             mRecipe = getIntent().getParcelableExtra(getString(R.string.key_recipe));
         }
 
-        Log.d("RecipeActivity", "OnCreate is called " + (mRecipe == null ? "recipe is null" : mRecipe.getName()));
-
-
         // Supporting going back to the list of recipes.
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -69,12 +66,6 @@ public class RecipeActivity extends AppCompatActivity
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-
-        if (mRecipe != null) {
-            Log.d("RecipeActivity", "Recipe name " + mRecipe.getName() + " Recipe step count " + Integer.toString(mRecipe.getSteps().size()));
-        }
-
-        Log.d("RecipeActivity", Boolean.toString(savedInstanceState == null) + " " + Boolean.toString(getIntent() == null));
 
         if (getResources().getBoolean(R.bool.tablet)) {
             // Tablet mode

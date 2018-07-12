@@ -53,7 +53,6 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
                 R.layout.fragment_recipe_step_detail,
                 container,
                 false);
-        Log.d("RecipeDetailsFragment", "onCreateViewCalled");
         Bundle fragmentArgs = getArguments();
 
         if (fragmentArgs != null && fragmentArgs.containsKey(getString(R.string.key_recipe_step))) {
@@ -227,7 +226,6 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        Log.d ("onPlayerStateChanged", "callback called");
         if (playbackState == ExoPlayer.STATE_READY && playWhenReady) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                     mVideoPlayer.getCurrentPosition(),

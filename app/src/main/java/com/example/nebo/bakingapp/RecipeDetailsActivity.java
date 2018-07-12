@@ -34,8 +34,6 @@ public class RecipeDetailsActivity extends AppCompatActivity
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d("RecipeDetailsActivity", "onCreateCalled");
-
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_details);
         mRecipeStep = -1;
         // Allow going back to the recipe activity.
@@ -47,7 +45,6 @@ public class RecipeDetailsActivity extends AppCompatActivity
 
         // Get the data from the saved instance state or the intent.
         if (savedInstanceState != null) {
-            Log.d ("SavedInstanceState", "SavedInstance state is not null for recipeDetailsActivity");
             activityData = savedInstanceState;
         }
         else {
@@ -128,7 +125,6 @@ public class RecipeDetailsActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("RecipeDetailsActivity", "onResumeCalled");
     }
 
     @Override
