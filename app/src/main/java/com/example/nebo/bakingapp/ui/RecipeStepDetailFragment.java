@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
     private ExoPlayer mImagePlayer = null;
     private MediaSessionCompat mMediaSession = null;
     private PlaybackStateCompat.Builder mStateBuilder = null;
+    private long mPosition = 0;
 
     public RecipeStepDetailFragment() {}
 
@@ -51,7 +53,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
                 R.layout.fragment_recipe_step_detail,
                 container,
                 false);
-
+        Log.d("RecipeDetailsFragment", "onCreateViewCalled");
         Bundle fragmentArgs = getArguments();
 
         if (fragmentArgs != null && fragmentArgs.containsKey(getString(R.string.key_recipe_step))) {
@@ -63,8 +65,8 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
 
             if (mRecipeStep.getVideoURL() != null && !mRecipeStep.getVideoURL().isEmpty()) {
                 if (mVideoPlayer != null) {
-                    releaseMediaSession();
                     releasePlayer();
+                    releaseMediaSession();
                 }
                 initializeMediaSession();
                 mVideoPlayer = initializePlayer(mRecipeStep.getVideoURL(),
@@ -100,9 +102,49 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
     @Override
     public void onDestroy() {
         super.onDestroy();
+        releaseImagePlayer();
+        releasePlayer();
+        releaseMediaSession();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releaseImagePlayer();
+        releasePlayer();
+        releaseMediaSession();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mVideoPlayer != null) {
+            mVideoPlayer.setPlayWhenReady(false);
+            mPosition = mVideoPlayer.getCurrentPosition();
+        }
+
         releaseMediaSession();
         releaseImagePlayer();
         releasePlayer();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mVideoPlayer == null && mRecipeStep != null && mRecipeStep.getVideoURL() != null &&
+                !mRecipeStep.getVideoURL().isEmpty()) {
+            initializeMediaSession();
+            mVideoPlayer = initializePlayer(mRecipeStep.getVideoURL(),
+                    mBinding.video.pvRecipeStepVideo);
+            mVideoPlayer.seekTo(mPosition);
+        }
+
+        if (mImagePlayer == null && mRecipeStep != null && mRecipeStep.getThumbnailURL() != null &&
+                !mRecipeStep.getThumbnailURL().isEmpty()) {
+            mImagePlayer = initializePlayer(mRecipeStep.getThumbnailURL(),
+                    mBinding.thumbnail.pvRecipeStepThumbnail);
+        }
     }
 
     private ExoPlayer initializePlayer(String urlString, PlayerView playerView) {
@@ -112,6 +154,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
             player = ExoPlayerFactory.newSimpleInstance(getContext(),
                     new DefaultTrackSelector());
             playerView.setPlayer(player);
+            player.addListener(this);
             playerView.setControllerShowTimeoutMs(0);
             playerView.setControllerHideOnTouch(false);
 
@@ -184,6 +227,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        Log.d ("onPlayerStateChanged", "callback called");
         if (playbackState == ExoPlayer.STATE_READY && playWhenReady) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                     mVideoPlayer.getCurrentPosition(),
@@ -195,7 +239,10 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
                     1f);
         }
 
-        mMediaSession.setPlaybackState(mStateBuilder.build());
+        // Upon reloading from an onResumed state the mMediaSession is null.
+        if (mMediaSession != null) {
+            mMediaSession.setPlaybackState(mStateBuilder.build());
+        }
     }
 
     @Override

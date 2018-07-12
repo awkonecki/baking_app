@@ -33,8 +33,11 @@ public class RecipeDetailsActivity extends AppCompatActivity
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_details);
 
+        Log.d("RecipeDetailsActivity", "onCreateCalled");
+
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_details);
+        mRecipeStep = -1;
         // Allow going back to the recipe activity.
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -45,7 +48,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
         // Get the data from the saved instance state or the intent.
         if (savedInstanceState != null) {
             Log.d ("SavedInstanceState", "SavedInstance state is not null for recipeDetailsActivity");
-            activityData = savedInstanceState.deepCopy();
+            activityData = savedInstanceState;
         }
         else {
             Intent intent = getIntent();
@@ -123,10 +126,25 @@ public class RecipeDetailsActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("RecipeDetailsActivity", "onResumeCalled");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(getString(R.string.key_recipe), mRecipe);
+        outState.putInt(getString(R.string.key_recipe_step_id), mRecipeStep);
+    }
+
+    @Override
     public void onNavigationClick(int direction) {
         mRecipeStep = mRecipeStep + direction;
         SharedPreferences sharedPreferences = getSharedPreferences(
                 getString(R.string.shared_preferences_name), MODE_PRIVATE);
+
+        Log.d("RecipeDetailsActivity", "Step value is " + Integer.toString(mRecipeStep));
 
         if (mRecipeStep < -1 || mRecipeStep >= mRecipe.getSteps().size()) {
             // the step is outside of the scope of the recipe, thus the user might have completed
