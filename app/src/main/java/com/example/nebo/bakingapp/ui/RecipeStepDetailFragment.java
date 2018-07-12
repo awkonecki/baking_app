@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,8 +64,8 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
 
             if (mRecipeStep.getVideoURL() != null && !mRecipeStep.getVideoURL().isEmpty()) {
                 if (mVideoPlayer != null) {
-                    releaseMediaSession();
                     releasePlayer();
+                    releaseMediaSession();
                 }
                 initializeMediaSession();
                 mVideoPlayer = initializePlayer(mRecipeStep.getVideoURL(),
@@ -100,9 +101,51 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
     @Override
     public void onDestroy() {
         super.onDestroy();
-        releaseMediaSession();
         releaseImagePlayer();
         releasePlayer();
+        releaseMediaSession();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releaseImagePlayer();
+        releasePlayer();
+        releaseMediaSession();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //releaseMediaSession();
+        //releaseImagePlayer();
+        //releasePlayer();
+        if (mVideoPlayer != null) {
+            mVideoPlayer.setPlayWhenReady(false);
+            mVideoPlayer.getPlaybackState();
+            //mVideoPlayer.stop();
+        }
+
+        if (mImagePlayer != null) {
+            mImagePlayer.setPlayWhenReady(false);
+            mImagePlayer.getPlaybackState();
+            //mImagePlayer.stop();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mVideoPlayer != null) {
+            mVideoPlayer.setPlayWhenReady(true);
+            mVideoPlayer.getPlaybackState();
+        }
+
+        if (mImagePlayer != null) {
+            mImagePlayer.setPlayWhenReady(true);
+            mImagePlayer.getPlaybackState();
+        }
     }
 
     private ExoPlayer initializePlayer(String urlString, PlayerView playerView) {
@@ -112,6 +155,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
             player = ExoPlayerFactory.newSimpleInstance(getContext(),
                     new DefaultTrackSelector());
             playerView.setPlayer(player);
+            player.addListener(this);
             playerView.setControllerShowTimeoutMs(0);
             playerView.setControllerHideOnTouch(false);
 
@@ -184,6 +228,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        Log.d ("onPlayerStateChanged", "callback called");
         if (playbackState == ExoPlayer.STATE_READY && playWhenReady) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                     mVideoPlayer.getCurrentPosition(),
