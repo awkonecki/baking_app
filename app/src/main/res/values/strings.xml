@@ -7,6 +7,7 @@
     <string name="key_recipes" translatable="false">recipes</string>
     <string name="key_recipe_step_id" translatable="false">recipe-step-id</string>
     <string name="key_recipe_ingredients" translatable="false">recipe-ingredients</string>
+    <string name="key_video_position" translatable="false">video_position</string>
 
     <string name="add_widget">Add widget</string>
     <string name="key_recipe_task_operation" translatable="false">recipe-task-operation</string>

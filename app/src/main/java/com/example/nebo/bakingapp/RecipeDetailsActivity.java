@@ -33,6 +33,9 @@ public class RecipeDetailsActivity extends AppCompatActivity
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d("RecipeDetailsActivity", "onCreateCalled");
+
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_details);
         mRecipeStep = -1;
         // Allow going back to the recipe activity.
@@ -120,6 +123,12 @@ public class RecipeDetailsActivity extends AppCompatActivity
             // Index out of supported range.
             finish();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("RecipeDetailsActivity", "onResumeCalled");
     }
 
     @Override

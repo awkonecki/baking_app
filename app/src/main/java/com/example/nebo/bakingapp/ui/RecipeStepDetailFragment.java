@@ -37,6 +37,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
     private ExoPlayer mImagePlayer = null;
     private MediaSessionCompat mMediaSession = null;
     private PlaybackStateCompat.Builder mStateBuilder = null;
+    private long mPosition = 0;
 
     public RecipeStepDetailFragment() {}
 
@@ -52,7 +53,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
                 R.layout.fragment_recipe_step_detail,
                 container,
                 false);
-
+        Log.d("RecipeDetailsFragment", "onCreateViewCalled");
         Bundle fragmentArgs = getArguments();
 
         if (fragmentArgs != null && fragmentArgs.containsKey(getString(R.string.key_recipe_step))) {
@@ -117,34 +118,32 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
     @Override
     public void onPause() {
         super.onPause();
-        //releaseMediaSession();
-        //releaseImagePlayer();
-        //releasePlayer();
         if (mVideoPlayer != null) {
             mVideoPlayer.setPlayWhenReady(false);
-            mVideoPlayer.getPlaybackState();
-            //mVideoPlayer.stop();
+            mPosition = mVideoPlayer.getCurrentPosition();
         }
 
-        if (mImagePlayer != null) {
-            mImagePlayer.setPlayWhenReady(false);
-            mImagePlayer.getPlaybackState();
-            //mImagePlayer.stop();
-        }
+        releaseMediaSession();
+        releaseImagePlayer();
+        releasePlayer();
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if (mVideoPlayer != null) {
-            mVideoPlayer.setPlayWhenReady(true);
-            mVideoPlayer.getPlaybackState();
+        if (mVideoPlayer == null && mRecipeStep != null && mRecipeStep.getVideoURL() != null &&
+                !mRecipeStep.getVideoURL().isEmpty()) {
+            initializeMediaSession();
+            mVideoPlayer = initializePlayer(mRecipeStep.getVideoURL(),
+                    mBinding.video.pvRecipeStepVideo);
+            mVideoPlayer.seekTo(mPosition);
         }
 
-        if (mImagePlayer != null) {
-            mImagePlayer.setPlayWhenReady(true);
-            mImagePlayer.getPlaybackState();
+        if (mImagePlayer == null && mRecipeStep != null && mRecipeStep.getThumbnailURL() != null &&
+                !mRecipeStep.getThumbnailURL().isEmpty()) {
+            mImagePlayer = initializePlayer(mRecipeStep.getThumbnailURL(),
+                    mBinding.thumbnail.pvRecipeStepThumbnail);
         }
     }
 
@@ -240,7 +239,10 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
                     1f);
         }
 
-        mMediaSession.setPlaybackState(mStateBuilder.build());
+        // Upon reloading from an onResumed state the mMediaSession is null.
+        if (mMediaSession != null) {
+            mMediaSession.setPlaybackState(mStateBuilder.build());
+        }
     }
 
     @Override
