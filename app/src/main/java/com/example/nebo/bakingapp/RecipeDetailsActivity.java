@@ -33,7 +33,6 @@ public class RecipeDetailsActivity extends AppCompatActivity
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_details);
         mRecipeStep = -1;
         // Allow going back to the recipe activity.
@@ -95,10 +94,12 @@ public class RecipeDetailsActivity extends AppCompatActivity
             // A common piece that will exist no matter what will be the navigation fragment.
             RecipeNavigationFragment recipeNavigationFragment = new RecipeNavigationFragment();
 
-            fragmentManager.beginTransaction().
-                    add(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
-                    add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
-                    commit();
+            if (savedInstanceState == null) {
+                fragmentManager.beginTransaction().
+                        add(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
+                        add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
+                        commit();
+            }
         }
         else if (mRecipeStep == -1 && mRecipe != null) {
             RecipeIngredientsFragment recipeIngredientsFragment = new RecipeIngredientsFragment();
@@ -111,10 +112,12 @@ public class RecipeDetailsActivity extends AppCompatActivity
             // A common piece that will exist no matter what will be the navigation fragment.
             RecipeNavigationFragment recipeNavigationFragment = new RecipeNavigationFragment();
 
-            fragmentManager.beginTransaction().
-                    add(mBinding.flRecipeDetail.getId(), recipeIngredientsFragment).
-                    add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
-                    commit();
+            if (savedInstanceState == null) {
+                fragmentManager.beginTransaction().
+                        add(mBinding.flRecipeDetail.getId(), recipeIngredientsFragment).
+                        add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
+                        commit();
+            }
         }
         else {
             // Index out of supported range.
@@ -139,8 +142,6 @@ public class RecipeDetailsActivity extends AppCompatActivity
         mRecipeStep = mRecipeStep + direction;
         SharedPreferences sharedPreferences = getSharedPreferences(
                 getString(R.string.shared_preferences_name), MODE_PRIVATE);
-
-        Log.d("RecipeDetailsActivity", "Step value is " + Integer.toString(mRecipeStep));
 
         if (mRecipeStep < -1 || mRecipeStep >= mRecipe.getSteps().size()) {
             // the step is outside of the scope of the recipe, thus the user might have completed
