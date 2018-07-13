@@ -33,7 +33,6 @@ public class RecipeDetailsActivity extends AppCompatActivity
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_details);
         mRecipeStep = -1;
         // Allow going back to the recipe activity.
@@ -101,12 +100,6 @@ public class RecipeDetailsActivity extends AppCompatActivity
                         add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
                         commit();
             }
-            else {
-                fragmentManager.beginTransaction().
-                        replace(mBinding.flRecipeDetail.getId(), recipeStepDetailFragment).
-                        replace(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
-                        commit();
-            }
         }
         else if (mRecipeStep == -1 && mRecipe != null) {
             RecipeIngredientsFragment recipeIngredientsFragment = new RecipeIngredientsFragment();
@@ -123,12 +116,6 @@ public class RecipeDetailsActivity extends AppCompatActivity
                 fragmentManager.beginTransaction().
                         add(mBinding.flRecipeDetail.getId(), recipeIngredientsFragment).
                         add(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
-                        commit();
-            }
-            else {
-                fragmentManager.beginTransaction().
-                        replace(mBinding.flRecipeDetail.getId(), recipeIngredientsFragment).
-                        replace(mBinding.flRecipeDetailNavigation.getId(), recipeNavigationFragment).
                         commit();
             }
         }

@@ -46,6 +46,22 @@ public class RecipeStepDetailFragment extends Fragment /* implements ExoPlayer.E
         super.onAttach(context);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null && mPosition == 0) {
+            if (savedInstanceState.containsKey(getString(R.string.key_video_position))) {
+                mPosition = savedInstanceState.getLong(getString(R.string.key_video_position));
+            }
+            else {
+                mPosition = 0;
+            }
+        }
+
+        Log.d("RecipeStepDetailFrag","onActivityCreated Position is " + mPosition);
+        mVideoPlayer.seekTo(mPosition);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,8 +71,10 @@ public class RecipeStepDetailFragment extends Fragment /* implements ExoPlayer.E
                 false);
         Bundle fragmentArgs = getArguments();
 
-        if (fragmentArgs != null && fragmentArgs.containsKey(getString(R.string.key_recipe_step))) {
-            mRecipeStep = fragmentArgs.getParcelable(getString(R.string.key_recipe_step));
+        if (fragmentArgs != null) {
+            if (fragmentArgs.containsKey(getString(R.string.key_recipe_step))) {
+                mRecipeStep = fragmentArgs.getParcelable(getString(R.string.key_recipe_step));
+            }
         }
 
         if (mRecipeStep != null) {
@@ -65,9 +83,7 @@ public class RecipeStepDetailFragment extends Fragment /* implements ExoPlayer.E
             if (mRecipeStep.getVideoURL() != null && !mRecipeStep.getVideoURL().isEmpty()) {
                 if (mVideoPlayer != null) {
                     releasePlayer();
-                    // releaseMediaSession();
                 }
-                // initializeMediaSession();
                 mVideoPlayer = initializePlayer(mRecipeStep.getVideoURL(),
                         mBinding.video.pvRecipeStepVideo);
             }
@@ -97,11 +113,17 @@ public class RecipeStepDetailFragment extends Fragment /* implements ExoPlayer.E
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d("RecipeStepDetailFrag", "Current Position is " + mPosition);
+        outState.putLong(getString(R.string.key_video_position), mPosition);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         releaseImagePlayer();
         releasePlayer();
-        // releaseMediaSession();
     }
 
     @Override
@@ -109,7 +131,6 @@ public class RecipeStepDetailFragment extends Fragment /* implements ExoPlayer.E
         super.onStop();
         releaseImagePlayer();
         releasePlayer();
-        // releaseMediaSession();
     }
 
     @Override
@@ -120,7 +141,6 @@ public class RecipeStepDetailFragment extends Fragment /* implements ExoPlayer.E
             mPosition = mVideoPlayer.getCurrentPosition();
         }
 
-        // releaseMediaSession();
         releaseImagePlayer();
         releasePlayer();
     }
