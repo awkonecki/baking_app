@@ -30,7 +30,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
-public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.EventListener {
+public class RecipeStepDetailFragment extends Fragment /* implements ExoPlayer.EventListener */ {
     private FragmentRecipeStepDetailBinding mBinding = null;
     private RecipeStep mRecipeStep = null;
     private ExoPlayer mVideoPlayer = null;
@@ -65,14 +65,13 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
             if (mRecipeStep.getVideoURL() != null && !mRecipeStep.getVideoURL().isEmpty()) {
                 if (mVideoPlayer != null) {
                     releasePlayer();
-                    releaseMediaSession();
+                    // releaseMediaSession();
                 }
-                initializeMediaSession();
+                // initializeMediaSession();
                 mVideoPlayer = initializePlayer(mRecipeStep.getVideoURL(),
                         mBinding.video.pvRecipeStepVideo);
             }
             else {
-                //mBinding.video.getRoot().setVisibility(View.GONE);
                 mBinding.llVideo.setVisibility(View.GONE);
             }
 
@@ -86,7 +85,6 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
             }
             else {
                 mBinding.llThumbnail.setVisibility(View.GONE);
-                // mBinding.ll_thumbnail.getRoot().setVisibility(View.GONE);
             }
         }
 
@@ -103,7 +101,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
         super.onDestroy();
         releaseImagePlayer();
         releasePlayer();
-        releaseMediaSession();
+        // releaseMediaSession();
     }
 
     @Override
@@ -111,7 +109,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
         super.onStop();
         releaseImagePlayer();
         releasePlayer();
-        releaseMediaSession();
+        // releaseMediaSession();
     }
 
     @Override
@@ -122,7 +120,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
             mPosition = mVideoPlayer.getCurrentPosition();
         }
 
-        releaseMediaSession();
+        // releaseMediaSession();
         releaseImagePlayer();
         releasePlayer();
     }
@@ -133,7 +131,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
 
         if (mVideoPlayer == null && mRecipeStep != null && mRecipeStep.getVideoURL() != null &&
                 !mRecipeStep.getVideoURL().isEmpty()) {
-            initializeMediaSession();
+            // initializeMediaSession();
             mVideoPlayer = initializePlayer(mRecipeStep.getVideoURL(),
                     mBinding.video.pvRecipeStepVideo);
             mVideoPlayer.seekTo(mPosition);
@@ -153,7 +151,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
             player = ExoPlayerFactory.newSimpleInstance(getContext(),
                     new DefaultTrackSelector());
             playerView.setPlayer(player);
-            player.addListener(this);
+            // player.addListener(this);
             playerView.setControllerShowTimeoutMs(0);
             playerView.setControllerHideOnTouch(false);
 
@@ -172,6 +170,7 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
 
     private void releaseImagePlayer() {
         if (mImagePlayer != null) {
+            mImagePlayer.setPlayWhenReady(false);
             mImagePlayer.stop();
             mImagePlayer.release();
             mImagePlayer = null;
@@ -180,12 +179,14 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
 
     private void releasePlayer() {
         if (mVideoPlayer != null) {
+            mVideoPlayer.setPlayWhenReady(false);
             mVideoPlayer.stop();
             mVideoPlayer.release();
             mVideoPlayer = null;
         }
     }
 
+    /*
     private void releaseMediaSession() {
         if (mMediaSession != null) {
             mMediaSession.setActive(false);
@@ -282,4 +283,5 @@ public class RecipeStepDetailFragment extends Fragment implements ExoPlayer.Even
             // Go to next fragment will need a callback for this.
         }
     }
+    */
 }
