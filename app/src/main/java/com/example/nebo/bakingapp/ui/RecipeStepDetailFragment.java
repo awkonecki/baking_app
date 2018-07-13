@@ -59,7 +59,9 @@ public class RecipeStepDetailFragment extends Fragment /* implements ExoPlayer.E
         }
 
         Log.d("RecipeStepDetailFrag","onActivityCreated Position is " + mPosition);
-        mVideoPlayer.seekTo(mPosition);
+        if (mVideoPlayer != null) {
+            mVideoPlayer.seekTo(mPosition);
+        }
     }
 
     @Nullable
