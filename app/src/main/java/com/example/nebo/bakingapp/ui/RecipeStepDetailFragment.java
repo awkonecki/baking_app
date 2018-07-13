@@ -58,7 +58,6 @@ public class RecipeStepDetailFragment extends Fragment /* implements ExoPlayer.E
             }
         }
 
-        Log.d("RecipeStepDetailFrag","onActivityCreated Position is " + mPosition);
         if (mVideoPlayer != null) {
             mVideoPlayer.seekTo(mPosition);
         }
@@ -117,7 +116,6 @@ public class RecipeStepDetailFragment extends Fragment /* implements ExoPlayer.E
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d("RecipeStepDetailFrag", "Current Position is " + mPosition);
         outState.putLong(getString(R.string.key_video_position), mPosition);
     }
 
@@ -207,103 +205,4 @@ public class RecipeStepDetailFragment extends Fragment /* implements ExoPlayer.E
             mVideoPlayer = null;
         }
     }
-
-    /*
-    private void releaseMediaSession() {
-        if (mMediaSession != null) {
-            mMediaSession.setActive(false);
-            mMediaSession.release();
-            mMediaSession = null;
-        }
-    }
-
-    private void initializeMediaSession() {
-        // 1. Create a media session compact object
-        mMediaSession = new MediaSessionCompat(getContext(), "TAG");
-        // 2. Set the flags
-        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
-                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-        // 3. Setp an optional media button receiver component
-        mMediaSession.setMediaButtonReceiver(null);
-        // 4. Set the available actions and initial state.
-        mStateBuilder = new PlaybackStateCompat.Builder().setActions(
-                PlaybackStateCompat.ACTION_PLAY |
-                        PlaybackStateCompat.ACTION_PAUSE |
-                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT);
-        mMediaSession.setPlaybackState(mStateBuilder.build());
-        // 5. Set the callbacks
-        mMediaSession.setCallback(new MediaSessionCallback());
-        // 6. Start the session
-        mMediaSession.setActive(true);
-    }
-
-    @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {}
-
-    @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {}
-
-    @Override
-    public void onLoadingChanged(boolean isLoading) {}
-
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        if (playbackState == ExoPlayer.STATE_READY && playWhenReady) {
-            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
-                    mVideoPlayer.getCurrentPosition(),
-                    1f);
-        }
-        else if (playbackState == ExoPlayer.STATE_READY) {
-            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
-                    mVideoPlayer.getCurrentPosition(),
-                    1f);
-        }
-
-        // Upon reloading from an onResumed state the mMediaSession is null.
-        if (mMediaSession != null) {
-            mMediaSession.setPlaybackState(mStateBuilder.build());
-        }
-    }
-
-    @Override
-    public void onRepeatModeChanged(int repeatMode) {}
-
-    @Override
-    public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {}
-
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {}
-
-    @Override
-    public void onPositionDiscontinuity(int reason) {}
-
-    @Override
-    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {}
-
-    @Override
-    public void onSeekProcessed() {}
-
-    private class MediaSessionCallback extends MediaSessionCompat.Callback {
-        @Override
-        public void onPlay() {
-            mVideoPlayer.setPlayWhenReady(true);
-        }
-
-        @Override
-        public void onPause() {
-            mVideoPlayer.setPlayWhenReady(false);
-        }
-
-        @Override
-        public void onSkipToPrevious() {
-            // Go to previous fragment will need a callback for this
-        }
-
-        @Override
-        public void onSkipToNext() {
-            // Go to next fragment will need a callback for this.
-        }
-    }
-    */
 }

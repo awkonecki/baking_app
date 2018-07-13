@@ -143,8 +143,6 @@ public class RecipeDetailsActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getSharedPreferences(
                 getString(R.string.shared_preferences_name), MODE_PRIVATE);
 
-        Log.d("RecipeDetailsActivity", "Step value is " + Integer.toString(mRecipeStep));
-
         if (mRecipeStep < -1 || mRecipeStep >= mRecipe.getSteps().size()) {
             // the step is outside of the scope of the recipe, thus the user might have completed
             // the recipe or is not actually starting it so will clear the selected recipe.

@@ -100,12 +100,6 @@ public class RecipeActivity extends AppCompatActivity
                         add(mBinding.flRecipeSteps.getId(), recipeStepsFragment).
                         commit();
             }
-            else {
-                fragmentManager.beginTransaction().
-                        replace(mBinding.flIngredients.getId(), recipeIngredientsSelectionFragment).
-                        replace(mBinding.flRecipeSteps.getId(), recipeStepsFragment).
-                        commit();
-            }
 
             // Second pane - details
             Bundle fragmentArgs = new Bundle();
@@ -115,7 +109,7 @@ public class RecipeActivity extends AppCompatActivity
                 recipeStep = sharedPreferences.getInt(getString(R.string.key_recipe_step_id),
                         -1);
 
-                if (recipeStep != -1) {
+                if (recipeStep != -1 && savedInstanceState == null) {
                     // recipe step
                     fragmentArgs.putParcelable(getString(R.string.key_recipe_step),
                             mRecipe.getStep(recipeStep));
@@ -126,7 +120,7 @@ public class RecipeActivity extends AppCompatActivity
                             add(mBinding.flDetails.getId(), recipeStepDetailFragment).
                             commit();
                 }
-                else {
+                else if (savedInstanceState == null) {
                     // ingredient
                     fragmentArgs.putParcelableArrayList(getString(R.string.key_recipe_ingredients),
                             mRecipe.getIngredients());
@@ -138,7 +132,7 @@ public class RecipeActivity extends AppCompatActivity
                             commit();
                 }
             }
-            else if (mRecipe != null){
+            else if (mRecipe != null && savedInstanceState == null){
                 // ingredient
                 fragmentArgs.putParcelableArrayList(getString(R.string.key_recipe_ingredients),
                         mRecipe.getIngredients());
@@ -173,13 +167,6 @@ public class RecipeActivity extends AppCompatActivity
                         add(R.id.fl_recipe_steps, stepsFragment).
                         commit();
             }
-            else {
-                fragmentManager.beginTransaction().
-                        replace(R.id.fl_ingredients, recipeIngredientFragment).
-                        replace(R.id.fl_recipe_steps, stepsFragment).
-                        commit();
-            }
-
         }
 
         fragmentManager.executePendingTransactions();
@@ -320,14 +307,4 @@ public class RecipeActivity extends AppCompatActivity
             mBinding.btnStartContinue.setText(getString(R.string.recipe_selection_continue_label));
         }
     }
-
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_recipe, menu);
-
-
-        return true;
-    }
-    */
 }
